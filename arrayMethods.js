@@ -71,6 +71,9 @@ console.log(sortedArray)
 const items = ['réservé', 'premier', 'communiqué', 'café', 'adieu', 'éclair']
 console.log(items.sort((a, b) => a.localeCompare(b)))
 
+// Further Reading
+// https://eloquentjavascript.net/05_higher_order.html
+
 
 
 
