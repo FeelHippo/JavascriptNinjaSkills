@@ -84,6 +84,15 @@ const helper = k => {
     }
 }
 
+// ...or https://gist.github.com/jaysonrowe/1592432?permalink_comment_id=3692693#gistcomment-3692693
+const fizzBuzzHelper = n => (!(n % 3) && !(n % 5) && 'FizzBuzz') || (!(n % 3) && 'Fizz') || (!(n % 5) && 'Buzz') || n
+console.log(
+    [...Array(100)]
+    .map(
+        (element, index) => fizzBuzzHelper(index + 1)
+    ),
+)
+
 // isolate even values only and remove duplicates
 // Solution 1: Set
 let data = [
