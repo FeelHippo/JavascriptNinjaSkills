@@ -14,8 +14,8 @@ a = console.info;
 console.log(a('hoisted')); // 'hoisted'
 var a;
 
-console.log(b); // 10
-console.log(c); // ReferenceError : b is not defined
-console.log(d); // Cannot access 'c' before initialization
+console.log('~~~ 1', b); // 10
+console.log('~~~ 2', c); // ReferenceError : b is not defined
+console.log('~~~ 3', d); // undefined
 
 var d = 'hoisted';
