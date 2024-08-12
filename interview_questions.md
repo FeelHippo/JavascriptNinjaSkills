@@ -244,3 +244,5 @@ Are categorized as a special type of linked list in which traversal across the d
 This is made possible by the presence of two links in every node, one that links to the node next to it and another that connects to the node before it.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+[What are four basic principles of Object Oriented Programming?](https://medium.com/@cancerian0684/what-are-four-basic-principles-of-object-oriented-programming-645af8b43727)
