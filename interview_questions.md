@@ -24,7 +24,18 @@
         <li><a href="#durability">Durability</a></li>
       </ul>
     </li>
-
+    <li>
+      <a href="#data-structure">Data Structure</a>
+      <ul>
+        <li><a href="#array">Array</a></li>
+        <li><a href="#linked-list">Linked List</a></li>
+        <li><a href="#binary-tree">Binary Tree</a></li>
+        <li><a href="#lifo">LIFO</a></li>
+        <li><a href="#fifo">FIFO</a></li>
+        <li><a href="#binary-search-tree">Binary Search Tree</a></li>
+        <li><a href="#doubly-linked-lists"> Doubly Linked Lists</a></li>
+      </ul>
+    </li>
   </ul>
 </details>
 
@@ -147,5 +158,89 @@ Transactions are often executed concurrently (e.g., multiple transactions readin
 ### Durability
 
 Durability guarantees that once a transaction has been committed, it will **remain committed even in the case of a system failure**.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DATA STRUCTURE -->
+
+## Data Structure
+
+A storage format that defines the way data is stored, organized, and manipulated.
+
+Some popular data structures are Arrays, Trees, and Graphs
+
+The amount of memory that is to be reserved or allocated depends on the data type being stored in that variable
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ARRAY -->
+
+### Array
+
+Is commonly referred to as a collection of items stored at contiguous memory locations
+
+Items stored are of the same type
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LINKED LIST -->
+
+### Linked List
+
+Refers to a linear data structure in which the elements are not necessarily stored in a contiguous manner
+
+It is basically a sequence of nodes, each node points towards the next node forming a chain-like structure
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BINARY TREE -->
+
+### Binary Tree
+
+Is an extension of the linked list structure where each node has at most two children
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LIFO -->
+
+### LIFO
+
+LIFO is an abbreviation for Last In First Out
+It extracts the data that was stored last, first.
+
+A stack refers to a linear data structure performing operations in a LIFO
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- FIFO -->
+
+### FIFO
+
+FIFO stands for First In First Out
+The data that was stored first is extracted first
+
+A queue refers to a linear data structure that performs operations in a FIFO order
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BINARY SEARCH TREE -->
+
+### Binary Search Tree
+
+Is used to store data in a manner that it can be retrieved very efficiently. 
+
+The left sub-tree contains nodes whose keys are less than the node’s key value.
+
+The right sub-tree contains nodes whose keys are greater than or equal to the node’s key value
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DOUBLY LINKED LISTS -->
+
+### Doubly Linked Lists
+
+Are categorized as a special type of linked list in which traversal across the data elements can be done in both directions. 
+
+This is made possible by the presence of two links in every node, one that links to the node next to it and another that connects to the node before it.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
