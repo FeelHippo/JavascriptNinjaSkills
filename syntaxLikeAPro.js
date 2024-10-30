@@ -3,12 +3,12 @@
 // CONDITIONALS
 // use if/if else/else if you need to execute code depending on a condition:
 
-const name = 'Ringo'
-if (name === 'John' || name === 'George') {
+const bug = 'Ringo'
+if (['John', 'George'].includes(bug)) {
 	console.log('guitar')
-} else if (name === 'Paul') {
+} else if (bug === 'Paul') {
 	console.log('bass')
-} else if (name === 'Ringo') {
+} else if (bug === 'Ringo') {
 	console.log('drums')
 }
 
@@ -22,11 +22,11 @@ console.log(instrument)
 // this should be the one and only way to manipulate strings:
 // note the use of backticks ``, '' and "" will NOT work
 // within the backticks, any expression within the ${} symbol will be evaluated to string
-const band = 'beatles'
+const band = 'The Beatles'
 const numberOfMembers = 4
 const didPaulDie = true
 
-const bandDescription = `The ${band.toUpperCase()} included ${didPaulDie ? numberOfMembers - 1 : numberOfMembers} original members`
+const bandDescription = `${band.toUpperCase()} included ${didPaulDie ? numberOfMembers - 1 : numberOfMembers} original members`
 console.log('bandDescription')
 
 // STRING TO NUMBER
