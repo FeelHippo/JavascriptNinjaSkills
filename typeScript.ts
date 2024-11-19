@@ -25,7 +25,7 @@ console.log(isPalindrome('angelodidolegna'));
 /// FizzBuzz
 const fizzBuzzToN = (n: number): (false | void)[] => new Array(n).fill(1).map((v,k) => helper(k+1))
 
-const helper = (k: number) => (!(k%3) && !(k%5) && console.log('FizzBuzz'), !(k%3) && console.log('Fizz'), !(k%5) && console.log('Buzz'));
+const helper = (k: number): false | void => (!(k%3) && !(k%5) && console.log('FizzBuzz'), !(k%3) && console.log('Fizz'), !(k%5) && console.log('Buzz'));
 
 fizzBuzzToN(100);
 
@@ -104,7 +104,7 @@ const fibonacci = (num: number, arr: number[] = [], index = 0): String => {
 	if (!num) return arr.join(' ')
 	else if (index < 1) arr.push(0) 
 	else if (index <= 2) arr.push(1) 
-	else arr.push(arr[arr.length -1] + arr[arr.length - 2])
+	else arr.push(arr[arr.length - 1] + arr[arr.length - 2])
 	num--
 	index++
 	return fibonacci(num, arr, index)
