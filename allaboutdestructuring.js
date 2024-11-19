@@ -1,9 +1,11 @@
+export {};
+
 // basic destructuring, single prop
 
 const user = {
 	id: 123,
 	name: 'Filippo',
-	age: 35,
+	age: 39,
 	education: {
 		degree: 'Bachelors'
 	}
