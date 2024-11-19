@@ -1,6 +1,6 @@
 [
 	() => console.log('Create a new Date object: new Date()', new Date()),
-	() => console.log('Create a date + a timestamp: new Date(milliseconds)', new Date(0 + Math.random() * (Number.MAX_SAFE_INTEGER - 0))),
+	() => console.log('Create a date + a timestamp: new Date(milliseconds)', new Date(1732040011889)),
 	() => console.log('Create a date from a string: new Date(datestring)', new Date('1985-03-17')),
 	() => console.log('Create a date from components: new Date(yyyy, m[0-11], d, h, m, s, ms)', new Date(1985, 2, 17, 1, 32, 57, 99)),
 	() => {
@@ -51,8 +51,7 @@ const commands = [
 	"console.log('Create a date from a string: new Date(datestring)', new Date('1985-03-17'))"
 ]
 
-const logs = () => {
-	new Function(commands[0])()
-	if (commands.length > 0) return logs(commands.shift())
+function logs() {
+	commands.length && (commands.shift() | logs())
 }
-logs(commands)
+logs()
