@@ -5,6 +5,8 @@ import (
 	"strconv"
 )
 
+// https://www.programiz.com/golang/string
+
 func reverseString(example string) string {
 	reversedString := ""
 	stringLength := len(example)
@@ -16,21 +18,6 @@ func reverseString(example string) string {
 
 func isPalindrome(example string) bool {
 	return example == reverseString(example)
-}
-
-func fizzBuzzHelper(n int) string {
-	result := strconv.Itoa(n) + ": "
-	switch true {
-	case n%3 == 0 && n%5 == 0:
-		result = result + "FizzBuzz"
-	case n%3 == 0:
-		result = result + "Fizz"
-	case n%5 == 0:
-		result = result + "Buzz"
-	default:
-		result = result + "Negative"
-	}
-	return result
 }
 
 func bubbleSort() [6]int {
@@ -46,6 +33,21 @@ func bubbleSort() [6]int {
 		}
 	}
 	return array
+}
+
+func fizzBuzzHelper(n int) string {
+	result := strconv.Itoa(n) + ": "
+	switch true {
+	case n%3 == 0 && n%5 == 0:
+		result = result + "FizzBuzz"
+	case n%3 == 0:
+		result = result + "Fizz"
+	case n%5 == 0:
+		result = result + "Buzz"
+	default:
+		result = result + "Negative"
+	}
+	return result
 }
 
 func fizzBuzz(n int) {
@@ -71,10 +73,19 @@ func fibonacci(num int) []int {
 	return fibonacciSeries
 }
 
+func reverseArray(array []int) []int {
+	reversedArray := []int{}
+	for i := len(array); i > 0; i-- {
+		reversedArray = append(reversedArray, array[i-1])
+	}
+	return reversedArray
+}
+
 func main() {
 	fmt.Println(reverseString("example to demonstrate reversing of string"))
 	fmt.Println(isPalindrome("abba"))
 	fizzBuzz(15)
 	fmt.Println(bubbleSort())
 	fmt.Println(fibonacci(32))
+	fmt.Println(reverseArray([]int{1, 2, 7, 6, 4, 9, 12}))
 }
