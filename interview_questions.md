@@ -33,7 +33,16 @@
         <li><a href="#lifo">LIFO</a></li>
         <li><a href="#fifo">FIFO</a></li>
         <li><a href="#binary-search-tree">Binary Search Tree</a></li>
-        <li><a href="#doubly-linked-lists"> Doubly Linked Lists</a></li>
+        <li><a href="#doubly-linked-lists">Doubly Linked Lists</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="https://auth0.com/docs/get-started/identity-fundamentals">Identity Fundamentals</a>
+      <ul>
+        <li><a href="#iam">Basic concepts of IAM</a></li>
+        <li><a href="#authentication-vs-authorization">Authentication vs Authorization</a></li>
+        <li><a href="#oauth2">OAuth 2.0</a></li>
+        <li><a href="#open-id-connect">OpenID Connect</a></li>
       </ul>
     </li>
   </ul>
@@ -242,6 +251,108 @@ The right sub-tree contains nodes whose keys are greater than or equal to the no
 Are categorized as a special type of linked list in which traversal across the data elements can be done in both directions. 
 
 This is made possible by the presence of two links in every node, one that links to the node next to it and another that connects to the node before it.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BASIC CONCEPTS OF IAM -->
+
+### Basic concepts of IAM
+
+Identity and access management provides control over user validation and resource access. Commonly known as IAM, this technology ensures that the right people access the right digital resources at the right time and for the right reasons.
+
+- A digital resource is any combination of applications and data in a computer system.
+  - web applications
+  - APIs
+  - platforms
+  - devices
+  - databases
+- In IAM, a user account is a digital identity. User accounts can also represent non-humans, such as software, Internet of Things devices, or robotics
+  - Authentication is the verification of a digital identity. Someone (or something) authenticates to prove that they’re the user they claim to be
+  - Authorization is the process of determining what resources a user can access
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- AUTHENTICATION VS AUTHORIZATION -->
+
+### Authentication vs Authorization
+
+In simple terms, authentication is the process of verifying who a user is, while authorization is the process of verifying what they have access to.
+
+|**Authentication** |**Authorization** |
+|Determines whether users are who they claim to be |Determines what users can and cannot access |
+|Challenges the user to validate credentials | Verifies whether access is allowed through policies and rules |
+|Usually done before authorization |Usually done after successful authentication |
+|Generally, transmits info through an ID Token |Generally, transmits info through an Access Token |
+|Generally governed by the OpenID Connect (OIDC) protocol |Generally governed by the OAuth 2.0 framework |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- OAUTH 2.0 -->
+
+### OAuth 2.0
+
+- it is a [**specification**](https://oauth.net/articles/authentication/)
+- defines a **delegation protocol**
+  - conveys authorization decisions across a network of web-enabled applications and APIs
+  - wide variety of applications, including providing mechanisms for user authentication
+- **OAuth 2.0 is not an authentication protocol**
+  - OAuth is used *inside* of authentication protocols
+- OAuth uses tokens to grant access, which can be revoked at any time by the user, providing a more secure and convenient alternative to traditional password-based authentication
+- OAuth 2 is a newer version of OAuth that simplifies the authorization process and provides better support for mobile and cloud-based applications
+- Access tokens as proof of authentication:
+  - Since an authentication usually occurs ahead of the issuance of an access token, it is tempting to consider reception of an access token of any type proof that such an authentication has occurred
+  - However, mere possession of an access token doesn't tell the client anything on its own
+  - In OAuth, the token is designed to be opaque to the client, but in the context of a user authentication, the client needs to be able to derive some information from the token
+  - This problem stems from the fact that the client is not the intended *audience* of the OAuth access token. Instead, it is the *authorized presenter* of that token, and the audience is in fact the *protected resource*
+- general OAuth does **not** define a specific format or structure for the access token itself
+  - protocols like OpenID Connect's ID Token and Facebook Connect's Signed Response provide a secondary token along side the access token that communicates the authentication information directly to the client
+  - This allows the primary access token to remain opaque to the client, just like in regular OAuth
+- Access of a protected API as proof of authentication:
+  - the token was freshly minted in the context of a user being authenticated at the authorization server, or
+  - Refresh tokens and assertions can be used to get access tokens without the user being present, or
+  - in some cases access grants can occur without the user having to authenticate at all
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- OPENID CONNECT -->
+
+### OpenID Connect
+
+- [how it works](https://openid.net/developers/how-connect-works/)
+  - *It simplifies the way to verify the identity of users based on the authentication performed by an Authorization Server and to obtain user profile information in an interoperable and REST-like manner.*
+  - *OpenID Connect enables application and website developers to launch sign-in flows and receive verifiable assertions about users across Web-based, mobile, and JavaScript clients*
+- an open standard published in early 2014 that defines an **interoperable way to use OAuth 2.0 to perform user authentication**
+- built directly on OAuth 2.0 and in most cases is deployed right along with (or on top of) an OAuth infrastructure
+- uses the JSON Object Signing And Encryption (JOSE) suite of specifications for carrying signed and encrypted information around in different places
+  - an OAuth 2.0 deployment with JOSE capabilities is already a long way to defining a fully compliant OpenID Connect system
+  - the delta between the two is relatively small
+  - that delta makes a big difference, and OpenID Connect manages to avoid many of the pitfalls discussed above by adding **several key components** to the OAuth base:
+    - [**ID Tokens**](https://jwt.io/introduction)
+      - The OpenID Connect ID Token is a **signed JSON Web Token (JWT)** that is given to the client application along side the regular OAuth access token
+      - The ID Token contains a set of claims about the authentication session:
+        - *identifier for the user (sub)*
+        - *identifier for the identity provider who issued the token (iss)*
+        - *the identifier of the client for which this token was created (aud)*
+        - information about the token's valid (and usually short) *lifetime*
+        - it is issued in addition to (and not in lieu of) an access token, allowing the access token to remain *opaque* to the client as it is defined in regular OAuth
+    - UserInfo Endpoint
+      - clients are not *required* to use the **access token**, since the **ID Token** contains all the necessary information for *processing the authentication event*. However, in order to provide *compatibility with OAuth* and *match the general tendency* for authorizing identity and other API access in parallel, **OpenID Connect always issues the ID token along side an OAuth access token**.
+      - In addition to the claims in the ID Token, **OpenID Connect defines a standard protected resource** that contains claims about the **current user**
+      - The claims here are **not part of the authentication process**, as discussed above, but instead provide **bundled identity attributes** that make the authentication protocol more valuable to application developers
+      - OpenID Connect defines a set of standardized OAuth scopes that map to subsets of these attributes:
+        - *profile*
+        - *email*
+        - *phone*
+        - *address*
+    - Dynamic server discovery and client registration
+      - With OpenID Connect, a common protected API is deployed across a wide variety of clients and providers, all of which need to know about each other to operate
+      - OpenID Connect defines a **discovery protocol** that allows clients to easily **fetch information on how to interact with a specific identity provider**
+      - On the other side of the transaction, OpenID Connect defines a **client registration protocol** that allows **clients to be introduced to new identity providers**
+      - By using these two mechanisms and a common identity API, OpenID Connect can function at internet scale, where no parties have to know about each other ahead of time
+    - Compatibility with OAuth 2.0
+      - Even with all of this robust authentication capability, OpenID Connect is (by design) still compatible with plain OAuth 2.0, making it a very good choice to deploy on top of an OAuth system with minimal developer effort
+      - To facilitate the building of good client applications, the OpenID Connect working group has published documents on building a [basic OpenID Connect client](https://openid.net/specs/openid-connect-basic-1_0.html) using the authorization code flow as well as building an [implicit OpenID Connect client](https://openid.net/specs/openid-connect-implicit-1_0.html)
+      - Both of these documents walk the developer through building a basic OAuth 2.0 client and adding the handful of components necessary for OpenID Connect.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
