@@ -102,32 +102,64 @@ class Operations {
     int iteration = 0;
     bool swapped = false;
 
+    // iterate over the whole linked list
+    // https://github.com/FeelHippo/JavascriptNinjaSkills/blob/9455d3f38bab21727cb10e0d87251b83f5c6959d/interviewQuestions.dart#L30
     while (iteration < lenght) {
-      // the node that eventually will have the highest value
+      // the traversing node, starts from head every iteration
+      // e.g. [6, 2, 7, 4]
       Node traverseNode = head;
+      // the traversing node, starts from head every iteration
+      // e.g. [6, 2, 7, 4]
       Node currentNode = head;
       swapped = false;
 
+      // traverse the entire linked list 
+      // https://github.com/FeelHippo/JavascriptNinjaSkills/blob/9455d3f38bab21727cb10e0d87251b83f5c6959d/interviewQuestions.dart#L31
       while (traverseNode.next != null) {
-        // Temporary pointer to store the next
-        // pointer of traverseNode
+        // Temporary pointer to store traverseNode's next node
+        // e.g. [6 (== traverseNode), 2 (== nextNode), 7]
         Node nextNode = traverseNode.next!;
+        // if current value > next value => swap
+        // https://github.com/FeelHippo/JavascriptNinjaSkills/blob/9455d3f38bab21727cb10e0d87251b83f5c6959d/interviewQuestions.dart#L32
+        // e.g. if (6 > 2) => true
         if (traverseNode.value > nextNode.value) {
           swapped = true;
+          // very fist iteration
+          // e.g. 6 (== traverseNode) ==  head => true
           if (traverseNode == head) {
             // Performing swap operations and
             // updating the head of the linked list:
+
+            // e.g. 6.next = 7
             traverseNode.next = nextNode.next;
+            // e.g. 2.next = 6
             nextNode.next = traverseNode;
+            // e.g. swap 6 with 2
             currentNode = nextNode;
+            // e.g. head == 2
             head = currentNode;
+
+            // e.g. result is [2, 6, 7]
           } else {
             // Performing swap operation
+            // e.g. traverseNode == 7, nextNode == 4
+            // [2, 6, 7, 4]
+
+            // e.g. 7.next = null
+            // swap traverseNode(high value) with nextNode(low value)
             traverseNode.next = nextNode.next;
+            // e.g. 4.next = 7
             nextNode.next = traverseNode;
+            // e.g. 6.next = 4
+            // prepare next iteration. currentNode was 6 from [2, 6, 7, 4]
+            // new status is [2, 6, 4, 7], where 6(current node).next is now 4
+            // at next iteration, 6 will be compared with 4
             currentNode.next = nextNode;
+            // e.g. current node = 4
             currentNode = nextNode;
           }
+          // traverse node now is unchanged. e.g. 7, because we traverse the original head
+          // at the next iteration, 4.next == null, and the loop will break
           continue;
         }
         currentNode = traverseNode;
