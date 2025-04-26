@@ -81,9 +81,9 @@ class Operations {
     if (head == null) {
         return null;
     }
-    while (head?.next != null || head?.value != null) {
-        if (head?.value != val) {
-            final Node newNode = Node(value: head?.value ?? 0);
+    while (head?.next != null) {
+        if (head!.value != val) {
+            final Node newNode = Node(value: head.value);
             if (newHead == null) {
                 newHead = newNode;
             } else {
@@ -94,7 +94,7 @@ class Operations {
                 temp.next = newNode;
             }
         }
-        head = head?.next;
+        head = head.next;
     }
     return newHead;
   }
