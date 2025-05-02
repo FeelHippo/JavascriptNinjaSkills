@@ -129,4 +129,23 @@ void main() {
   print(addBinary('11', '1'));
   print(addBinary('101001110101', '101'));
   print(addBinary('101', '101001110101'));
+  bool isUglyNumber(int n) {
+    // ugly number must be positive
+    if (n < 1) return false;
+    // an ugly number is defined as a number whose only prime factors are 2, 3, or 5
+    // 
+    for (int primeFactor in [2, 3, 5]) {
+        // keep dividing n by the prime factor until it is no longer divisible by that factor
+        while (n % primeFactor == 0) {
+            n = n ~/ primeFactor;
+        }
+        // If at the end of this process, n has been reduced to 1, 
+        // then all of n's prime factors must have been among 2, 3, or 5, 
+        // and thus n is an ugly number (return true)
+    }
+    return n == 1;
+  }
+  print(isUglyNumber(6));
+  print(isUglyNumber(1));
+  print(isUglyNumber(14));
 }
