@@ -18,7 +18,7 @@ void main() {
   Node? head = null;
 
   // Create new nodes and add them to the list
-  [2, 6, 7, 1, 5, 8, 3, 9, 4].forEach((int value) {
+  [2, 6, 7, 1, 5, 8, 3, 9, 4, 6, 7, 1, 5].forEach((int value) {
     // generate Node object
     final newNode = Node(value: value);
 
@@ -49,6 +49,13 @@ void main() {
   // sort the list
   Node bubbleSortedList = Operations().bubbleSort(head!, Operations().linkedListLength(head!));
   Operations().printHead(bubbleSortedList);
+
+  // remove duplicates from the list
+  Node? uniqueElements = Operations().deleteDuplicates(bubbleSortedList);
+  if (uniqueElements != null) {
+    print('Removed element, new unique list: ');
+    Operations().printHead(uniqueElements);
+  }
 }
 
 class Operations {
@@ -172,5 +179,38 @@ class Operations {
       iteration++;
     }
     return head;
+  }
+  // Given the head of a sorted linked list, delete all duplicates such that each element appears only once. 
+  // Return the linked list sorted as well.
+  Node? deleteDuplicates(Node? head) {
+    if (head == null || head.next == null) return head;
+    // result linked list
+    Node? newHead;
+    // stores currently highest value in list
+    int? currentHeadVal;
+    // 1. iterate over the original head
+    while (head != null) {
+        // skip this node if the value has already been added to the result
+        if (head.value != currentHeadVal) {
+            // create a new node to add to newHead
+            final newNode = Node(value: head.value);
+            // if head has not been initialised
+            // newNode will be the new head
+            if (newHead == null) {
+                newHead = newNode;
+            } else {
+                // otherwise, add newNode to the end of newHead
+                Node temp = newHead;
+                while (temp.next != null) {
+                    temp = temp.next!;
+                }
+                temp.next = newNode;
+            }
+            currentHeadVal = newNode.value;
+        }
+        // 2. continue iteration over the original head
+        head = head.next;
+    }
+    return newHead;
   }
 }
