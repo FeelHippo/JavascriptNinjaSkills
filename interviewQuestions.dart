@@ -148,4 +148,50 @@ void main() {
   print(isUglyNumber(6));
   print(isUglyNumber(1));
   print(isUglyNumber(14));
+  // You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, 
+  // and two integers m and n, representing the number of elements in nums1 and nums2 respectively.
+  // Merge nums1 and nums2 into a single array sorted in non-decreasing order.
+  void merge(List<int> nums1, int m, List<int> nums2, int n) {
+    // short circuits
+    if (nums2.isEmpty) {
+        nums1 = nums1.sublist(m);
+    }
+    if (nums1.isEmpty) {
+        nums1 = nums2;
+    }
+    // kind of a Bubble algo
+    // by merging the arrays from right to left,
+    // avoid additional space complexities and time-consuming operations 
+    // like shifting elements
+    // The pointers i, j, and k are initialized as follows:
+    // i starts at m - 1 => current element from nums1
+    // j at n - 1 => current element from nums2
+    // and k at m + n - 1 => pointer to index were element will be inserted
+    int k = (m + n) - 1;
+    int i = m - 1;
+    int j = n - 1;
+
+    // j will be 0 when all elements have been merged into nums2
+    while (j >= 0) {
+        // Compare the elements at pointer i in nums1 and at pointer j in nums2.
+
+        // If nums1[i] is greater, place nums1[i] in nums1[k],
+        // and decrement both i and k
+        if (i >= 0 && nums1[i] > nums2[j]) {
+            nums1[k] = nums1[i];
+            i--;
+        } else {
+        // If nums2[j] is greater or i is out of bounds
+        // (which means all elements of nums1 have been placed),
+        // place nums2[j] in nums1[k], and decrement both j and k
+            nums1[k] = nums2[j];
+            j--;
+        }
+        k--;
+    }
+  }
+  List<int> nums1 = [1,2,3,0,0,0];
+  List<int> nums2 = [2,5,6];
+  merge(nums1, 3, nums2, 3);
+  print(nums1);
 }
