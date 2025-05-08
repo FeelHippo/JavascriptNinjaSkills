@@ -52,6 +52,55 @@ void main() {
     return array;
   }
   print(bubbleOrderDescending([1, 2, 7, 6, 4, 9, 12]));
+  // Counting Sort Algorithm
+  List<int> countSort(List<int> nums) {
+    final int listLength = nums.length;
+    int max = 0;
+
+    // Find the maximum element of inputArray
+    for (int i = 0; i < listLength; i++) {
+        if (nums[i] > max) {
+            max = nums[i];
+        }
+    }
+    print('~~~ countSort find max element: $max');
+
+    // Initialize a new countArray with 0s
+    // the length is == max because each item represents a number from nums
+    // e.g if max is 3, countArray == [0 (how many zeros), 0 (how many ones), 0 (how many twos), 0 (how many threes)]
+    List<int> countArray = List<int>.filled(max + 1, 0); // [0, 0, 0, ...max + 1]
+    print('~~~ countSort init countArray: $countArray');
+
+    // Map each element of inputArray as an index of countArray
+    for (int i = 0; i < listLength; i++) {
+        final int valueFromNumsAtIndexI = nums[i];
+        // this counts the occurrences of a number inside of nums
+        // e.g.: nums[0] == 1
+        // if there are 2 Ones in nums, countArray == [0, 2 (this items index is 1, there are two of them)]
+        countArray[valueFromNumsAtIndexI]++;
+    }
+    print('~~~ countSort Map inputArray to indexes of countArray: $countArray');
+
+    // Calculate prefix sum at every index of countArray
+    for (int i = 1; i <= max; i++) {
+        // sum the previous item to the current
+        // e.g. [2, 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 0, 1] => [2, 4, 6, 6, 8, 8, 10, 12, 12, 14, 14, 14, 15]
+        countArray[i] += countArray[i - 1];
+    }
+    print('~~~ countSort Map prefix sum at every index of countArray: $countArray');
+
+    // Create outputArray from countArray
+    List<int> outputArray = List<int>.generate(listLength, (int index) => 0);
+    for (int i = listLength - 1; i >= 0; i--) {
+        final int valueFromNumsAtIndexI = nums[i]; // e.g. nums[1] == 2
+        final int valueFromcountArrayAtIndexNumsOfI = countArray[valueFromNumsAtIndexI]; // e.g. [2, 4, 6 (this one!)]
+        outputArray[valueFromcountArrayAtIndexNumsOfI - 1] = valueFromNumsAtIndexI;  // e.g. outputArray[6 - 1] == 2 CORRECT!
+        countArray[nums[i]]--; // one occurrence has already been counted in
+    }
+
+    return outputArray;
+  }
+  print(countSort([1, 2, 7, 0, 6, 4, 9, 12, 9, 4, 6, 7, 2, 1, 0]));
   List<int> reverseArray(List<int> array) {
     List<int> reversedArray = [];
     while (array.isNotEmpty) {
