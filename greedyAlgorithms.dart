@@ -1,3 +1,4 @@
+// Greedy algorithms are a class of algorithms that make locally optimal choices at each step with the hope of finding a global optimum solution.
 void main() {
   // Fractional Knapsack Problem
   // Given two arrays, val[] and wt[], representing the values and weights of items,
@@ -41,4 +42,43 @@ void main() {
   print(fractionalKnapsack([60, 100, 120], [10, 20, 30], 50)); // sorted
   print(fractionalKnapsack([120, 100, 60], [30, 20, 10], 50)); // unsorted
   print(fractionalKnapsack([500], [30], 10));
+
+  // Assign Cookies
+  // Given two arrays, greed[] and cookie[] such
+  // that greed[i] denotes the minimum cookie size wanted by ith child
+  // and cookie[i] denotes the size of ith cookie,
+  // the task is to find the maximum number of children that can be satisfied by assigning them cookies, 
+  // with each child getting at most 1 cookie.
+  // The idea is to use Greedy Algorithm to assign smallest cookie to each child such that the child gets satisfied. 
+  // So, we can sort both greed[] and cookie[] array and start assigning the smallest cookies to the children with smallest greed. 
+  // We can initialize two pointers, say i and j to the beginning of greed[] and cookie[] respectively. 
+  // Now, we can have 2 cases
+  //   - If greed[i] <= cookie[j], this means that we can satisfy the ith child by assigning him jth cookie.
+  //     So, we increase the count of satisfied children by 1 and increment both the pointers to move to the next child and cookie.
+  //   - If greed[i] > cookie[j], this means that we cannot satisfy the ith child by assigning him jth cookie as he wants a bigger cookie.
+  //     So, increment j to move to the next bigger cookie.
+  int maxChildren(List<int> greed, List<int> cookie) {
+    greed.sort();
+    cookie.sort();
+
+    // Initialize pointers
+    int i = 0, j = 0, satisfiedChildren = 0;
+    
+    // Iterate until we reach the end of either array
+    while (i < greed.length && j < cookie.length) {
+      // If ith child can be satisfied with jth cookie,
+      // assign it to him and increment the count
+      if (greed[i] <= cookie[j]) {
+        satisfiedChildren++;
+        i++;
+        j++;
+      } else {
+        // If ith child cannot be satisfied with jth 
+        // cookie, move to the next bigger cookie
+        j++;
+      }
+    }
+    return satisfiedChildren;
+  }
+  print(maxChildren([1, 2, 3, 2, 1, 2, 3, 4], [1, 1, 6, 3, 1, 6]));
 }
