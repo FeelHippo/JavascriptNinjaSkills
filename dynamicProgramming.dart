@@ -42,4 +42,31 @@ void main() {
   }
   print(countWays(3));
   // print(countWays(12));
+
+  // Given a string, return the number of ways to split it into two parts,
+  // such that at least one of the parts has an equal number of 'x's and 'y's
+  // https://brainly.com/question/48085400
+
+
+  bool containsChar(String substring) {
+    return substring.contains('x')
+      || substring.contains('X')
+      || substring.contains('y')
+      || substring.contains('Y');
+  } 
+
+  int recursiveStringCounter(String s, int result, int pointer) {
+    if (pointer == 0) return result;
+    final String left = s.substring(0, pointer);
+    final String right = s.substring(pointer, s.length);
+    if (containsChar(left) && containsChar(right)) result++;
+
+    return recursiveStringCounter(s, result, pointer - 1);
+  }
+
+  int countWaysString(String s) {
+    return recursiveStringCounter(s, 0, s.length - 1);
+  }
+
+  print(countWaysString('ayxbx'));
 }
