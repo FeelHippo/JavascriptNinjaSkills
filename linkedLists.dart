@@ -88,11 +88,17 @@ class Operations {
     if (head == null) {
         return null;
     }
+    // iterate over the provided linked list
     while (head?.next != null) {
+        // when the current value is not equal to the one to discard
         if (head!.value != val) {
             final Node newNode = Node(value: head.value);
+            // if the new head is null, initialize it
             if (newHead == null) {
                 newHead = newNode;
+            // otherwise, reach the end of the new linked list
+            // which does not contain the value to discard
+            // and add a new node at the end, with the current value
             } else {
                 Node temp = newHead!;
                 while (temp.next != null) {
