@@ -1,6 +1,7 @@
 import 'dart:math';
 
 // https://projecteuler.net/problem=3
+// https://www.geeksforgeeks.org/dsa/find-largest-prime-factor-number/
 // https://www.grae.io/post/euler_problem_3/
 void main() {
 	print(largestPrimeFactor(13195));
@@ -17,6 +18,7 @@ void main() {
 	print(largestPrimeFactorNaiveRecursive(100, memo: memo));
 }
 
+// https://www.geeksforgeeks.org/dsa/find-largest-prime-factor-number/
 int largestPrimeFactor(int limit) {
 	// default value
 	late int largestPrime;
