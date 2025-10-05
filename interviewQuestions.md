@@ -1,6 +1,6 @@
-<a name="readme-top"></a>
+<a id="readme-top"></a>
 
-<!-- TABLE OF CONTENTS -->
+<!-- README TOP -->
 <details>
   <summary>Common interview questions</summary>
   <ul>
@@ -39,11 +39,21 @@
     <li>
       <a href="https://auth0.com/docs/get-started/identity-fundamentals">Identity Fundamentals</a>
       <ul>
-        <li><a href="#iam">Basic concepts of IAM</a></li>
+        <li><a href="#basic-concepts-of-iam">Basic Concepts of IAM</a></li>
         <li><a href="#authentication-vs-authorization">Authentication vs Authorization</a></li>
-        <li><a href="#oauth2">OAuth 2.0</a></li>
+        <li><a href="#oauth-2">OAuth 2.0</a></li>
         <li><a href="#open-id-connect">OpenID Connect</a></li>
       </ul>
+    </li>
+    <li>
+        <a href="https://github.com/arialdomartini/Back-End-Developer-Interview-Questions">Back-End Developer Interview Questions</a>
+        <summary>Design Patterns</summary>
+        <ul>
+            <li><a href="#globals-are-evil">Globals Are Evil</a></li>
+            <li><a href="#inversion-of-control">Inversion of Control</a></li>
+            <li><a href="#law-of-demeter">Law of Demeter</a></li>
+            <li><a href="#active-record">Active Record</a></li>
+        </ul>
     </li>
   </ul>
 </details>
@@ -288,9 +298,9 @@ In simple terms, authentication is the process of verifying who a user is, while
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- OAUTH 2.0 -->
+<!-- OAUTH 2 -->
 
-### OAuth 2.0
+### OAuth 2
 
 - it is a [**specification**](https://oauth.net/articles/authentication/)
 - defines a **delegation protocol**
@@ -315,9 +325,9 @@ In simple terms, authentication is the process of verifying who a user is, while
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- OPENID CONNECT -->
+<!-- OPEN ID CONNECT -->
 
-### OpenID Connect
+### Open ID Connect
 
 - [how it works](https://openid.net/developers/how-connect-works/)
   - *It simplifies the way to verify the identity of users based on the authentication performed by an Authorization Server and to obtain user profile information in an interoperable and REST-like manner.*
@@ -359,3 +369,352 @@ In simple terms, authentication is the process of verifying who a user is, while
 
 [What are four basic principles of Object Oriented Programming?](https://medium.com/@cancerian0684/what-are-four-basic-principles-of-object-oriented-programming-645af8b43727)
 [The Main Differences Between HTTP and TCP](https://www.goanywhere.com/blog/http-vs-tcp-whats-the-difference)
+
+<!-- GLOBALS ARE EVIL -->
+
+## Globals Are Evil
+
+Q: `Why are global and static objects evil? Can you show it with a code example?`
+
+A:
+- `Mutable global state is evil for many reasons:`
+  - *Bugs from mutable global state* - Mutability can cause a lot of tricky bugs, and makes it difficult to track down where in the codebase they happen. 
+  - *Poor testability* - A global mutable state needs to be set up for each test case, limiting the ability to test all scenarios. 
+  - *Inflexibility* - A global mutable state supposes that the entire application needs the same shared value at all times. 
+  - *Function impurity* - Ideally, all functions should be "pure", i.e. the result depends on the input parameters. A global mutable state presupposes impure functions. 
+  - *Code comprehension* - A global mutable state makes it more difficult to understand what a certain bit of code is supposed to do.
+  - *Concurrency issues* - A global mutable state requires locking when used in a concurrent situation. This adds complexity to the code.
+- `Good alternatives:`
+  - *Function parameters* - See `Function impurity` above.
+  - *Dependency Injection* - See [this](https://stackoverflow.com/a/3140/10708345) wonderful SO answer.
+  - *Immutable global state* - This is effectively just "a Constant".
+  - *Immutable singletons* - Same as above, but their instantiation can wait till they are needed. 
+
+[Example](https://medium.com/@sitapati/avoiding-mutable-global-state-in-browser-js-89437eaebaac):
+
+*BAD*
+```js
+// global variable, declared as var, which means that it can be reassigned at runtime
+// moreover, the variable's name should convey its global scope, this doesn't
+var memArray = [];
+//object    
+function member(id, password) {
+  this.id          = id; 
+  this.pwd         = password
+}
+  
+var memObj1 = new member("m001","123");
+memArray.push(memObj1);
+```
+
+*GOOD*
+```js
+// Rather than exposing an array, we should expose an object that encapsulates the state, plus mutation methods.
+// And we will not expose the actual state, because local functions can still and may be tempted to mutate it directly.
+// Instead we will return a copy of the state, so that the only way to update it is via the object methods
+const GlobalMemberStore = (() => {
+  let _members = []
+  const needsArg = arg => {
+    if (!arg) {
+      throw new Error (`Undefined passed as argument to Store!`)
+    }
+    return arg
+  }
+  const needsId = member => {
+    if (!member.id) {
+      throw new Error (`Undefined id on member passed as argument to Store!`)
+    }
+    return member
+  }
+  const Store = {
+    // see https://developer.mozilla.org/en-US/docs/Glossary/Deep_copy
+    // because the elements of the array are objects, local functions can still mutate members within the copy,
+    // and that will affect the global state — because the array elements are references to objects.
+    setMembers: members => (_members = members.map(m => ({...m}))),
+    getMembers: () => _members.map(m => ({...m})),
+    getMember: id => {
+      const member = _members.filter(m => m.id === id)
+      return member.length === 1 ? 
+        { found: true, member: {...member[0]}} :
+        { found: false, member: undefined }
+    },
+    putMember: member => {
+      const m = needsId(needsArg(member))
+      if (Store.getMember(m.id).found) {
+        throw new Error(`${m.id} already exists!`)
+      }
+      _members = [..._members, {...m}]
+    },
+    updateMember: update => {
+      const u = needsId(needsArg(update))
+      if (!Store.getMember(u.id).found) {
+        throw new Error(`${u.id} does not exists!`)
+      }
+      _members = _members.map(m => m.id === u.id ? 
+                              {...update} : m)
+    }
+  }
+  return Object.freeze(Store)
+})()
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- INVERSION OF CONTROL -->
+
+## Inversion of Control
+
+The *Inversion-of-Control (IoC) pattern*, is about providing any kind of callback, which "implements" and/or controls reaction, instead of acting ourselves directly (in other words, inversion and/or redirecting control to the external handler/controller).
+The *Dependency-Injection (DI) pattern* is `a more specific version of IoC pattern`, and is `all about removing direct and/or hard-coded dependencies from your code, to replace them with inject-able dependencies`.
+
+Every DI implementation can be considered IoC, but one should not call it IoC, because implementing Dependency-Injection is harder than callback (Don't lower your product's worth by using the general term "IoC" instead).
+
+For DI example, say your application has a text-editor component, and you want to provide spell checking. Your standard code would look something like this:
+
+
+```javascript
+public class TextEditor {
+
+    private SpellChecker checker;
+
+    public TextEditor() {
+        this.checker = new SpellChecker();
+    }
+}
+```
+
+What we've done here creates a dependency between the TextEditor and the SpellChecker. In an IoC scenario we would instead do something like this:
+
+
+```javascript
+public class TextEditor {
+
+    private IocSpellChecker checker;
+
+    public TextEditor(IocSpellChecker checker) {
+        this.checker = checker;
+    }
+}
+```
+
+In the first code example we are instantiating SpellChecker (this.checker = new SpellChecker();), which means the TextEditor class directly depends on the SpellChecker class.
+
+In the second code example we are creating an abstraction by having the SpellChecker dependency class in TextEditor's constructor signature (not initializing dependency in class). This allows us to call the dependency then pass it to the TextEditor class like so:
+
+
+```javascript
+SpellChecker sc = new SpellChecker(); // dependency
+TextEditor textEditor = new TextEditor(sc);
+```
+
+Now the client creating the TextEditor class has control over which SpellChecker implementation to use because we're injecting the dependency into the TextEditor signature.
+
+For example, we could inject some improved implementation instead of the default implementation, or, depending on user's needs or settings we could even inject a Spanish spellchecker or German spellchecker.
+
+Note that just like IoC being the base of many other patterns, above sample is only one of many Dependency-Injection kinds, for example:
+
+*Constructor Injection*.
+
+Where an instance of IocSpellChecker would be passed to constructor, either automatically or similar to above manually.
+
+*Setter Injection*.
+
+Where an instance of IocSpellChecker would be passed through setter-method or public property.
+
+*Service-lookup and/or Service-locator*.
+
+Where TextEditor would ask a known provider for a globally-used-instance (service) of IocSpellChecker type (and that maybe without storing said instance, and instead, asking the provider again and again).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LAW OF DEMETER -->
+
+## Law of Demeter
+
+The [Law of Demeter (the Principle of Least Knowledge)](https://dev.to/devcorner/understanding-the-law-of-demeter-in-object-oriented-design-4feg) states that each unit should have only limited knowledge about other units and it should only talk to its immediate friends (sometimes stated as "don't talk to strangers").
+Would you write code violating this principle, show why it is a bad design and then fix it?
+
+The Law of Demeter, also known as the Principle of Least Knowledge, is a guideline for reducing coupling between classes. It states:
+
+A method of an object should only call methods of:
+
+- *Itself*
+- *Its own fields (member objects)*
+- *Objects passed as arguments*
+- *Objects created locally within the method*
+
+- In simple terms:
+`A class should only interact with objects it directly knows, not objects retrieved from other objects.`
+
+In Low-Level Design (LLD), LoD is crucial because it:
+
+- *Reduces tight coupling between classes*
+- *Makes the system easier to maintain*
+- *Simplifies unit testing*
+- *Encourages encapsulation, hiding internal details from other classes*
+
+*BAD*
+
+Problem:
+Driver knows too much about Car’s internals (the Engine).
+This creates tight coupling — any change in Car’s engine structure could break Driver.
+
+```
+class Engine {
+    public void start() { System.out.println("Engine started"); }
+}
+
+class Car {
+    private Engine engine = new Engine();
+    public Engine getEngine() { return engine; }
+}
+
+class Driver {
+    public void drive(Car car) {
+        car.getEngine().start(); // ❌ Violates LoD
+    }
+}
+```
+
+*GOOD*
+
+Benefits:
+
+Driver only interacts with Car, not Engine.
+Car encapsulates its Engine internally.
+Changes inside Engine do not affect Driver.
+
+```
+class Engine {
+    public void start() { System.out.println("Engine started"); }
+}
+
+class Car {
+    private Engine engine = new Engine();
+    public void startEngine() { engine.start(); } // LoD-friendly interface
+}
+
+class Driver {
+    public void drive(Car car) {
+        car.startEngine(); // ✅ Only talks to immediate friend
+    }
+}
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ACTIVE RECORD -->
+
+## Active Record
+
+Active-Record is the design pattern that promotes objects to include functions such as Insert, Update, and Delete, and properties that correspond to the columns in some underlying database table.
+
+In your opinion and experience, which are the limits and pitfalls of the this pattern?
+
+- [Active Record Pattern vs. Repository Pattern: Making the Right Choice](https://medium.com/@shiiyan/active-record-pattern-vs-repository-pattern-making-the-right-choice-f36d8deece94)
+- `Active Record Pattern`
+  - it is a software architecture pattern that seamlessly integrates both business logic and data persistence within a single object.
+  - This object typically mirrors a row in a relational database management system (RDBMS) table. E.g. a User class, and a row in the Users table
+  - With this pattern, when developers instantiate an active record object, they are essentially working directly with a corresponding database row.
+  - This direct representation makes it straightforward and intuitive for developers to perform create, read, update and delete (CRUD) operations on the databases, thereby simplifying database interactions.
+  - `Flexibility`: 
+    - When it comes to the flexibility of managing persistence mechanisms, the active record pattern can present more challenges than the repository pattern.
+    - The active record pattern is less modular because the domain model is closely tied to a specific persistence mechanism, such as a relational database or a document-based NoSQL database.
+  - `Testability`:
+    - Testing domain models in repository pattern is undemanding while testing active record models can be complex.
+- `Repository Pattern`
+  - Understanding the `Data Mapper Pattern`
+    - The data mapper pattern, in contrast to the active record pattern, ensures *domain objects only contain business rules*.
+    - Any task related to *database operations is handed over to the data mapper layer*.
+    - By separating these concerns, developers can make sure that *changes in one don’t unintentionally impact the other*, leading to more modular, flexible, and maintainable applications.
+  - The `Repository Layer`
+    - it introduces an additional layer upon the data mapper layer.
+    - The main purpose of the repository layer is to centralize the query construction code, providing a more object-oriented way of communicating with a collection of objects.
+    - Repositories act as domain object collections. This makes data operations — like adding, removing, or querying objects — feel like you’re simply working with in memory collection-like data structures.
+    - By pooling all the query construction code into repositories, the codebase remains DRY (Don’t Repeat Yourself).
+    - This centralized approach makes changes to data operation localized, reducing the risk of unintended side effects.
+- `Active Record Pattern Pitfalls`
+  - As complexity grows exponentially, it becomes more challenging to read, understand and debug Active Record Pattern.
+  - modifying such a bulky class is risky: with so many functionalities packed into a single place, even minor modifications can lead to unexpected side effects, potentially affecting seemingly unrelated features.
+- `Embracing the Repository Pattern and DDD Tactical Design`
+  - best to turn to a combination of the Repository pattern and the Domain-Driven Design (DDD) tactical approach
+  - By adhering to the Single Responsibility Principle (SRP), we restructure our codebase to ensure each class does only what it’s supposed to:
+    1. *Domain*: encapsulates the core business logic of our application.
+    2. *Repository*: This is dedicated to data persistence and retrieval tasks. It abstracts away the details of database operations.
+    3. *Events*: used to decouple side-effects (actions performed as consequence of a repository operation) from main operations (the actual repository operation)
+    4. *Helpers*: handle side effects, for instance a Notifier
+
+*GOOD*
+```javascript
+
+// DOMAIN
+class User {
+  id: number;
+  name: string;
+  isDeleted: boolean;
+  articles: Article[]; // A list of articles associated with this user
+  comments: Comment[]; // A list of comments associated with this user
+  userLikes: Like[]; // A list of likes associated with this user
+
+  addArticle(title, content) {
+    this.articles.push(new Article(this, title, content));
+  }
+
+  commentOnArticle(article: Article, commentText: string) {
+    const comment = new Comment(this, article, commentText);
+    this.comments.push(comment);
+    article.addComment(comment);
+
+    // Dispatch an event when a comment is posted
+    const event = new CommentPostedEvent(comment);
+    event.dispatch();
+  }
+
+  likeArticle(article) {
+    this.userLikes.push(new Like(this, article));
+  }
+}
+
+// REPOSITORY
+class UserRepository {
+    database: any; // This can be a reference to a database connection
+
+    save(user: User) {
+        this.database.save(user);
+    }
+
+    findById(id: number): User | null {
+        return this.database.findById(id);
+    }
+
+    findActive(): User[] {
+        return this.database.findAllBy({ isDeleted: false });
+    }
+
+    // ... Additional CRUD operations ...
+}
+
+// EVENT (used in domain)
+class CommentPostedEvent {
+    comment: Comment;
+
+    dispatch() {
+        // Notify the system that a comment has been posted
+        // This is just a showcase. Real-world applications mostly use pub/sub pattern here.
+        Notifier.sendNotification(this.comment);
+    }
+}
+
+// NOTIFIER
+class Notifier {
+    static sendNotification(comment: Comment) {
+        // Logic to send notification, e.g., email or push notification
+        console.log(
+            `Notification: New comment posted by ${comment.user.name} on article ${comment.article.title}`
+        );
+    }
+}
+
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
