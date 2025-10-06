@@ -53,6 +53,11 @@
             <li><a href="#inversion-of-control">Inversion of Control</a></li>
             <li><a href="#law-of-demeter">Law of Demeter</a></li>
             <li><a href="#active-record">Active Record</a></li>
+            <li><a href="#billion-dollar-mistake">Billion Dollar Mistake</a></li>
+            <li><a href="#inheritance-vs-composition">Inheritance vs Composition</a></li>
+            <li><a href="#anti-corruption-layer">Anti Corruption Layer</a></li>
+            <li><a href="#singleton">Singleton</a></li>
+            <li><a href="#data-abstraction">Data Abstraction</a></li>
         </ul>
     </li>
   </ul>
@@ -715,6 +720,211 @@ class Notifier {
     }
 }
 
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BILLION DOLLAR MISTAKE -->
+
+## Billion Dollar Mistake
+
+Would you discuss the techniques to avoid the null reference, such as the [Null Object Pattern](https://refactoring.guru/introduce-null-object), or Option types?
+
+- `Null Object Pattern`:
+  - Problem: since some methods return null instead of real objects, you have many checks for null in your code.
+*BAD*
+```javascript
+if (customer == null) {
+  plan = BillingPlan.basic();
+}
+else {
+  plan = customer.getPlan();
+}
+```
+  - Solution: instead of null, return a null object that exhibits the default behavior.
+*GOOD*
+```javascript
+class NullCustomer extends Customer {
+  isNull(): boolean {
+    return true;
+  }
+  getPlan(): Plan {
+    return new NullPlan();
+  }
+  // Some other NULL functionality.
+}
+
+// Replace null values with Null-object.
+let customer = (order.customer != null) ?
+  order.customer : new NullCustomer();
+
+// Use Null-object as if it's normal subclass.
+plan = customer.getPlan();
+```
+  - Drawbacks: the price of getting rid of conditionals is creating yet another new class.
+- `Option Type`:
+  - Instead of using null or undefined, you use a special type that represents two distinct states:
+    - `Some`: A value is present, and it's wrapped in this variant.
+    - `None`: There is no value, represented explicitly by this variant.
+  - This pattern ensures that you must handle both cases explicitly, thereby enhancing type safety and code clarity
+  - When you have a variable of type Option<T>, TypeScript knows it could be one of these two variants.
+  - This promotes a conscious and explicit handling of the "absence" case, something that using null or undefined doesn't enforce.
+*GOOD*
+```typescript
+type Some<T> = {
+  _tag: "Some",
+  value: T
+}
+
+type None = {
+  _tag: "None"
+}
+
+type Option<T> = Some<T> | None
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- INHERITANCE VS COMPOSITION -->
+
+## Inheritance vs Composition
+
+[Many state that](https://hackernoon.com/inheritance-vs-composition-in-javascript), in Object-Oriented Programming, composition is often a better option than inheritance. What's you opinion?
+
+- `Inheritance`: it is one of the core concepts of object-oriented programming, it helps avoiding code duplication.
+  - The main idea is that we create a base class, which contains logic, that will be reused by our subclasses.
+```typescript
+class Super {
+    create() {}
+    remove() {}
+}
+
+// SubClass "is-a" Super
+class SubClass extends Super {
+    // create, remove, etc are available
+}
+```
+- `Composition`: uses a has-a relationship. We collect different pieces of functionality together.
+
+```typescript
+class Super {
+    constructor(subClass, anotherSubClass) {
+        // Super "has-a" SubClass
+        this.subClass = subclass;
+        this.anotherSubClass = anotherSubClass;
+    }
+    
+    // example
+    doSomething() {
+        var httpResponse = this.anotherSubClass.get();
+        this.subClass.writeFileSystem(httpResponse);
+    }
+}
+
+class SubClass {
+    constructor(type) {
+        this.type = type;
+    }
+    writeFileSystem() {}
+}
+
+class AnotherSubClass {
+    constructor(type) {
+        this.type = type;
+    }
+    httpCall() {}
+}
+```
+- `Why prefer Composition over Inheritance?`:
+  - see [this](https://stackoverflow.com/a/14633709/10708345) wonderful SO answer, for pros and cons
+  - most languages, including JS, do not allow multiple inheritance
+  - it scales better than inheritance
+  - it provides better abstraction and encapsulation, better code reuse
+  - it makes it easier to uphold the "Single Responsibility Principle"
+    - which is often summarized as "There should never be more than one reason for a class to change."
+    - it means that every class exists for a specific purpose and it should only have methods that are directly related to its purpose.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ANTI CORRUPTION LAYER -->
+
+## Anti Corruption Layer
+
+What is an Anti-corruption Layer?
+
+- Microsoft [docs](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer)
+- Isolate the different subsystems by placing an anti-corruption layer between them.
+- This layer translates communications between the two systems, allowing one system to remain unchanged while the other can avoid compromising its design and technological approach.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ANTI CORRUPTION LAYER -->
+
+## Anti Corruption Layer
+
+Singleton is a design pattern that restricts the instantiation of a class to one single object. Writing a Thread-Safe Singleton class is not so obvious. Would you try?
+
+[This](https://medium.com/@cancerian0684/singleton-design-pattern-and-how-to-make-it-thread-safe-b207c0e7e368) solution is perfect in a Java environment. This scenario will hardly happen in a NodeJs environment, since by default NodeJs is single thread. 
+However, TODO(Filippo): use the following to reproduce the scenario, as an exercise https://nodejs.org/api/worker_threads.html
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DATA ABSTRACTION -->
+
+## Data Abstraction
+
+The ability to change implementation without affecting clients is called [Data Abstraction](https://algs4.cs.princeton.edu/12oop/). Produce an example violating this property, then fix it.
+
+- A client does not need to know how a data type is implemented in order to be able to use it.
+- *Creating objects* - Each data-type value is stored in an object. To create (or instantiate) an individual object, we invoke a constructor by using the keyword new.
+  - Each time that a client uses new, the system allocates memory space for the object, initializes its value, and returns a reference to the object.
+- *Invoking instance methods* - The purpose of an instance method is to operate on data-type values.
+  - Instance methods have all of the properties of static methods:
+    - arguments are passed by value,
+    - method names can be overloaded,
+    - they may have a return value, 
+    - they may cause side effects. 
+  - They have an additional property that characterizes them: *each invocation is associated with an object*.
+- *Using objects* - Declarations give us variable names for objects that we can use in code. To use a given data type, we:
+  - Declare variables of the type, for use in referring to objects
+  - Use the keyword new to invoke a constructor that creates objects of the type
+  - Use the object name to invoke instance methods, either as statements or within expressions
+
+*BAD*
+```dart
+//concrete class
+class Car {
+  const Car({ required this.brand });
+  final String brand;
+  void accelerate() {
+    print('$brand -> accelerate');
+  }
+}
+
+void main() {
+  Car suzuki = new Car(brand: 'Suzuki');
+  suzuki.accelerate();
+}
+
+```
+
+*GOOD*
+```dart
+// abstract class
+abstract class Car {  
+    void accelerate();  
+}  
+// concrete class
+class Suzuki extends Car{  
+    void accelerate(){
+        print('Suzuki -> accelerate');
+     
+    }
+}
+void main() {
+  Car obj = new Suzuki();
+  obj.accelerate();
+}  
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
