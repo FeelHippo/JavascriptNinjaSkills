@@ -58,6 +58,10 @@
             <li><a href="#anti-corruption-layer">Anti Corruption Layer</a></li>
             <li><a href="#singleton">Singleton</a></li>
             <li><a href="#data-abstraction">Data Abstraction</a></li>
+            <li><a href="#dry">DRY</a></li>
+            <li><a href="#dependency-hell">Dependency Hell</a></li>
+            <li><a href="#robustness-principle">Robustness Principle</a></li>
+            <li><a href="#separation-of-concerns">Separation of Concerns</a></li>
         </ul>
     </li>
   </ul>
@@ -327,6 +331,8 @@ In simple terms, authentication is the process of verifying who a user is, while
   - the token was freshly minted in the context of a user being authenticated at the authorization server, or
   - Refresh tokens and assertions can be used to get access tokens without the user being present, or
   - in some cases access grants can occur without the user having to authenticate at all
+
+References: [OAuth2 basics](https://supertokens.com/docs/authentication/unified-login/oauth2-basics)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -926,5 +932,125 @@ void main() {
   obj.accelerate();
 }  
 ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DRY -->
+
+## DRY
+
+Write a snippet of code violating the Don't Repeat Yourself (DRY) principle. Then, fix it.
+
+*BAD*
+```javascript
+const price = 99.99;
+const total1 = price * 1;
+const total2 = price * 2;
+```
+*GOOD*
+```javascript
+const price = 99.99;
+const calculateTotal = (unitPrice, itemsCount) => {
+    return unitPrice * itemsCount;
+}
+```
+*BAD*
+```javascript
+const price = 99.99;
+const vat = 0.21;
+
+const baseTotal = calculateTotal(price, 2);
+const vatTotal = calculateTotal(price, 2) * vat;
+```
+*GOOD*
+```javascript
+const price = 99.99;
+const vat = 0.21;
+// option 1
+const calculateTotal = (unitPrice, itemsCount) => unitPrice * itemsCount;
+const calculateTotalWithVAT = (totWithoutVAT, vat) => totWithoutVAT * vat;
+const totalWithVAT = calculateTotalWithVAT(calculateTotal(price * 2), vat);
+// option 2
+const calculateTotal = (unitPrice, itemsCount, vat) => {
+    const totWithoutVAT = unitPrice * itemsCount;
+    const totWithVAT = totWithoutVAT * vat;
+    return { totWithoutVAT, totWithVAT };
+}
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DEPENDENCY HELL -->
+
+## Dependency Hell
+
+How would you deal with [Dependency Hell](https://webflow.sourcegraph.com/blog/nine-circles-of-dependency-hell)?
+
+- Make sure you’re running a check against dependencies' version in your presubmit. Before the pull request is merged is also a great time to vet new dependencies — for licenses or security issues
+- Sometimes a little duplication is better than a bit of dependency.
+- Instead of eating more dependencies, try to snack on the low-hanging fruit of removing unused dependencies
+- Use a single package manager. Use declarative tools to glue everything else together
+- Tools like Docker can help capture all of these in one place, all in a mostly reproducible manner.
+- If you can, point to a specific github tag
+- Avoid monkey patching. If you must, use a third_party directory.
+- consider using interfaces, contracts, or dependency injection to provide loose coupling across different packages.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ROBUSTNESS PRINCIPLE -->
+
+## Robustness Principle
+
+The [robustness principle](https://medium.com/@mesw1/understanding-the-robustness-principle-postels-law-c1199ea79210) is a general design guideline for software that recommends "be conservative in what you send, be liberal in what you accept".
+It is often reworded as "be a tolerant reader and a careful writer". Would you like to discuss the rationale of this principle?
+
+*Examples and Impact*
+- *GOOD*
+  - *Enhanced Robustness*: Systems that can interpret and process a wide range of input formats are more resilient to unexpected data, reducing the likelihood of crashes or failures.
+- *BAD*
+  - *Security Risks*: Accepting a broad spectrum of inputs can lead to security vulnerabilities if not handled properly.
+  - *Protocol Rigidity*: Over time, being too liberal with accepted inputs can make it challenging to update or evolve protocols, as newer implementations might rely on this flexibility.
+
+- *Implementing Postel’s Law: A Balanced Approach*
+    - *Strict Output Standards*: Ensure that the data your system outputs rigorously follows established protocols and standards.
+    - *Flexible Input Processing*: Develop mechanisms to handle a variety of inputs gracefully. This includes implementing security checks and validations to guard against potential exploits.
+    - *Continuous Monitoring and Updates*: Regularly update your system to address any emerging vulnerabilities, especially those arising from the liberal acceptance of inputs.
+
+*Summary: The Significance of Balance*
+
+The Robustness Principle, while fostering system resilience and flexibility, must be applied with a careful balance.
+Overemphasis on either aspect — be it the conservative output or liberal input acceptance — can lead to challenges,
+including security vulnerabilities and resistance to protocol evolution. As software engineers,
+especially in fields impacting humanity like medical device development,
+it’s crucial to implement Postel’s Law judiciously,
+ensuring our systems are both robust and secure.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SEPARATION OF CONCERNS -->
+
+## Separation of Concerns
+
+[Separation of Concerns](https://www.geeksforgeeks.org/software-engineering/separation-of-concerns-soc/) is a design principle for separating a computer program into distinct areas, each one addressing a separate concern. There are a lot of different mechanisms for achieving Separation of Concerns (use of objects, functions, modules, or patterns such as MVC and the like). Would you discuss this topic?
+
+Separation of Concerns (SoC) is a fundamental principle in software engineering and design aimed at breaking down complex systems into smaller, more manageable parts. The goal is to organize a system's components in a way that each part addresses a single concern, or a cohesive aspect of functionality, rather than mixing multiple concerns together. This approach enhances modularity, maintainability, and scalability of software systems.
+
+Concerns might include user interface presentation, data storage and retrieval, business logic processing, error handling, security, etc. Each concern represents a cohesive aspect that can be managed independently.
+
+Separation of Concerns (SoC) is important in software engineering for several reasons:
+- *Modularity* - SoC encourages breaking down complex systems into smaller, more manageable parts,
+- *Maintainability* - changes and updates to one aspect of the system are less likely to impact other parts,
+- *Scalability* - Modularity promotes a design that allows for easy scalability,
+- *Reusability* - Separating concerns often leads to the creation of reusable components,
+- *Parallel Development* - SoC facilitates parallel development by providing clear boundaries between different parts of the system,
+- *Understanding and Debugging* - With concerns separated into distinct modules, it becomes easier to understand and debug software systems.
+
+Here's how SoC can be applied to system design:
+- *Layered Architecture* - Divide the system into layers, each responsible for a specific concern or aspect of functionality,
+- *Microservices Architecture* - Decompose the system into smaller, independent services, each responsible for a specific business function or domain,
+- *Component-Based Design* - Design the system as a collection of reusable, self-contained components, each addressing a specific concern,
+- *Service-Oriented Architecture (SOA)* - Organize the system into loosely coupled, interoperable services that communicate through standardized interfaces,
+- *Clear Interfaces and Contracts* - Define clear interfaces and contracts between different components or layers of the system,
+- *Domain-Driven Design (DDD)* - Identify and model the core domains and business concerns of the system.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
