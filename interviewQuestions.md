@@ -47,6 +47,11 @@
     </li>
     <li>
         <a href="https://github.com/arialdomartini/Back-End-Developer-Interview-Questions">Back-End Developer Interview Questions</a>
+        <summary>My Own Miserable Failures</summary>
+        <ul>
+            <li><a href="#sqs-consumer-failure">SQS Consumer Failure</a></li>
+            <li><a href="#multi-tenant-architecture">Multi Tenant Architecture</a></li>
+        </ul>
         <summary>Design Patterns</summary>
         <ul>
             <li><a href="#globals-are-evil">Globals Are Evil</a></li>
@@ -389,6 +394,48 @@ References: [OAuth2 basics](https://supertokens.com/docs/authentication/unified-
 
 [What are four basic principles of Object Oriented Programming?](https://medium.com/@cancerian0684/what-are-four-basic-principles-of-object-oriented-programming-645af8b43727)
 [The Main Differences Between HTTP and TCP](https://www.goanywhere.com/blog/http-vs-tcp-whats-the-difference)
+
+<!-- SQS CONSUMER FAILURE -->
+
+## SQS Consumer Failure
+
+From the [DOCS](https://github.com/bbc/sqs-consumer)
+
+- Message Acknowledgment Behavior:
+  - When `alwaysAcknowledge` is `false` (the default)
+    - Returning `undefined`, an `empty object {}`, or an `empty array []`: Message(s) will **NOT** be deleted (left on queue for retry)
+  - When `alwaysAcknowledge` is `true`: All messages will be **acknowledged and deleted** regardless of return value.
+- Error Handling: Throwing an error (or returning a rejected promise) from the handler function will cause the message to be **left on the queue**. An SQS redrive policy can be used to move messages that cannot be processed to a dead letter queue.
+- Deletion Process: Messages are deleted from the queue once the **handler function has completed successfully** (the above items should also be taken into account).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MULTI TENANT ARCHITECTURE -->
+
+## Multi Tenant Architecture
+
+Clarify the understanding of multi-tenant architecture and how to separate data access between tenants.
+
+Multi-tenant architecture is a design approach that enables multiple user groups — referred to as tenants — access to one instance of an application or system.
+
+Multi-tenant architecture creates distinct, isolated environments within a single physical infrastructure, such as a virtual machine, server, or cloud platform. This is accomplished by partitioning the data storage and processing; providing each tenant with their own dedicated space in the system. A tenant interacts with the application and can access their own data.
+
+Different sets of rules can be applied to each domain in terms of access control, resource allocation, and feature availability.
+
+Poorly implemented multitenancy can lead to issues such as unauthorized access and data misuse. To nullify such threats, these applications require careful design and management to ensure tenant isolation and secure data storage.
+
+The most important thing is to authorize the access of end users. Applications that can be used for this purpose include Okta, Auth0, and Azure Active Directory. Such applications enable organizations to manage authentication, authorization, and identity management capabilities.
+
+See AWS [DOCS](https://aws.amazon.com/solutions/guidance/multi-tenant-architectures-on-aws/)
+
+```text
+Tenant data is isolated from access by other tenants in the following ways:
+              - the Silo Model separates tenant data into a database instance per tenant;
+              - the Bridge Model isolates tenant data into a dedicated schema per tenant;
+              - the Pool Model uses the row-level security features of the database engine.
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GLOBALS ARE EVIL -->
 
