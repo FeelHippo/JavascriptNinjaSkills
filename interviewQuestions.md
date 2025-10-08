@@ -63,6 +63,15 @@
             <li><a href="#robustness-principle">Robustness Principle</a></li>
             <li><a href="#separation-of-concerns">Separation of Concerns</a></li>
         </ul>
+        <summary>Code Design</summary>
+        <ul>
+            <li><a href="#high-cohesion-loose-coupling">High Cohesion, Loose Coupling</a></li>
+            <li><a href="#index-zero">Index Zero</a></li>
+            <li><a href="#tdd">TDD</a></li>
+            <li><a href="#design-vs-architecture">Design Vs Architecture</a></li>
+            <li><a href="#multiple-inheritance">Multiple Inheritance</a></li>
+            <li><a href="#domain-logic-in-stored-procedures">Domain Logic in Stored Procedures</a></li>
+        </ul>
     </li>
   </ul>
 </details>
@@ -483,7 +492,7 @@ Every DI implementation can be considered IoC, but one should not call it IoC, b
 For DI example, say your application has a text-editor component, and you want to provide spell checking. Your standard code would look something like this:
 
 
-```javascript
+```
 public class TextEditor {
 
     private SpellChecker checker;
@@ -497,7 +506,7 @@ public class TextEditor {
 What we've done here creates a dependency between the TextEditor and the SpellChecker. In an IoC scenario we would instead do something like this:
 
 
-```javascript
+```
 public class TextEditor {
 
     private IocSpellChecker checker;
@@ -513,7 +522,7 @@ In the first code example we are instantiating SpellChecker (this.checker = new 
 In the second code example we are creating an abstraction by having the SpellChecker dependency class in TextEditor's constructor signature (not initializing dependency in class). This allows us to call the dependency then pass it to the TextEditor class like so:
 
 
-```javascript
+```
 SpellChecker sc = new SpellChecker(); // dependency
 TextEditor textEditor = new TextEditor(sc);
 ```
@@ -535,6 +544,8 @@ Where an instance of IocSpellChecker would be passed through setter-method or pu
 *Service-lookup and/or Service-locator*.
 
 Where TextEditor would ask a known provider for a globally-used-instance (service) of IocSpellChecker type (and that maybe without storing said instance, and instead, asking the provider again and again).
+
+[Here](https://github.com/FeelHippo/conversational_commerce/blob/main/inversion_of_control/dependency_injection.js) an example of how to implement lazy injection in vanilla JS.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -1052,5 +1063,202 @@ Here's how SoC can be applied to system design:
 - *Service-Oriented Architecture (SOA)* - Organize the system into loosely coupled, interoperable services that communicate through standardized interfaces,
 - *Clear Interfaces and Contracts* - Define clear interfaces and contracts between different components or layers of the system,
 - *Domain-Driven Design (DDD)* - Identify and model the core domains and business concerns of the system.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- HIGH COHESION LOOSE COUPLING -->
+
+## High Cohesion, Loose Coupling
+
+It is often said that one of the most important goals in Object-Oriented Design (and code design in general) is to have High Cohesion and Loose Coupling. 
+
+What does it mean? Why is it that important and how is it achieved?
+
+From [this](https://stackoverflow.com/a/74189337/10708345) wonderful SO answer:
+
+![See it here](https://i.sstatic.net/n2dIU.png)
+
+- *Cohesion* is a measure of the number of relationships that parts of a component have with each other. High cohesion means that all parts that are needed to deliver the component's functionality are included in the component
+
+- *Coupling* is a measure of the number of relationships that one component has with other components in the system. Low coupling means that components do not have many relationships with other components
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- INDEX ZERO -->
+
+## Index Zero
+
+Q: `Why do array indexes start with '0' in most languages?`
+
+A: I don't think any of us can provide a stronger argument than Edsger W. Dijkstra's article ["Why numbering should start at zero"](https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html).
+
+```text
+When dealing with a sequence of length N, the elements of which we wish to distinguish by subscript,
+the next vexing question is what subscript value to assign to its starting element.
+
+Adhering to convention a) (i.e 2 ≤ i < 13) yields, when starting with subscript 1, the subscript range 1 ≤ i < N+1; 
+
+e.g. N == 5
+1 ≤ i < 6
+
+starting with 0, however, gives the nicer range 0 ≤  i < N. 
+
+e.g. N == 5
+0 ≤ i < 5
+
+So let us let our ordinals start at zero: an element's ordinal (subscript) equals the number of elements preceding it in the sequence.
+And the moral of the story is that we had better regard —after all those centuries!— zero as a most natural number.
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- TDD -->
+
+## TDD
+
+How do tests and TDD influence code design?
+
+Refer tpo [this](https://github.com/testdouble/contributing-tests/wiki/Tests'-Influence-on-Design) article.
+
+```text
+Almost any test has the capability of providing helpful design cues about the subject it directly interacts with. 
+To make the most of that capability requires a keen awareness by the developer of the level of coupling they're aiming for 
+in their test and the implications of that coupling on the design and malleability of their code.
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DESIGN VS ARCHITECTURE -->
+
+## Design Vs Architecture
+
+[What is the difference between design and architecture?](https://medium.com/@concisesoftware/whats-the-difference-between-software-architecture-and-design-b705c2584631)
+
+- *Software architecture* focuses on developing the skeleton and high-level infrastructure of software. 
+- *Software design*, concentrates on the code level design. It addresses problems like the functions of individual modules, the scope of classes, the purposes of different functions, and the like.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DESIGN VS ARCHITECTURE -->
+
+## Design Vs Architecture
+
+Neither Typescript nor Dart support multiple "implementation" inheritance. They do, however, support multiple interfaces.
+
+For implementation, there is only a single super-class chain that a class can inherit member implementations from.
+
+*Typescript* gives us a [wonderful pattern](https://blog.bitsrc.io/multiple-inheritance-or-typescript-mixins-10076c4f136a) allowing us to create the function that will extend a base class.
+
+- define the type `Constructor` and interfaces that classes A and C implement:
+```typescript
+type Constructor<T = any> = new (...args: any[]) => T;
+
+interface HasMethodA {
+  propA: number;
+  a(): void;
+}
+
+interface HasMethodC {
+  c(): void;
+}
+```
+
+- create a mixin function for class A:
+```typescript
+function mixinA<T extends Constructor>(base: T): Constructor<HasMethodA> & T {
+  return class extends base {
+    protected _propA: number;
+
+    get propA(): number {
+      return this._propA;
+    }
+
+    constructor(...args: any[]) {
+      super(...args);
+    }
+
+    a(): void {
+      console.log('Method "a"');
+      this._propA = 42;
+    }
+  };
+}
+```
+
+- create mixin for class C:
+````typescript
+function mixinC<T extends Constructor>(base: T): Constructor<HasMethodC> & T {
+  return class extends base {
+    constructor(...args: any[]) {
+      super(...args);
+    }
+
+    c(): void {
+      console.log('Method "c"');
+    }
+  };
+}
+````
+
+- construct our resulting class D:
+```typescript
+const Dbase = mixinC(mixinA(class {}));
+
+class D extends Dbase {}
+
+const d = new D();
+d.a();
+d.c();
+console.log(d.propA);
+```
+
+*Dart* does have mixins, which allows implementation to be used by multiple classes, but not through inheritance as much as by mixin application.
+
+```dart
+abstract class A {
+  String get foo;
+}
+class A1 implements A {
+  String get foo => "A1";
+}
+class A2 implements A {
+  String get foo => "A2";
+}
+mixin B on A {
+  String get foo => "B:${super.foo}";
+}
+class C extends A1 with B {
+  String get foo => "C:${super.foo}";
+}
+class D extends A2 with B {
+  String get foo => "D:${super.foo}";
+}
+void main() {
+  print(C().foo); // C:B:A1
+  print(D().foo); // D:B:A2
+}
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- DOMAIN LOGIC IN STORED PROCEDURES -->
+
+## Domain Logic in Stored Procedures
+
+What are the pros and cons of holding domain logic in Stored Procedures?
+
+A stored procedure is a prepared SQL code that you can save, so the code can be reused over and over again.
+
+So if you have an SQL query that you write over and over again, save it as a stored procedure, and then just call it to execute it.
+
+You can also pass parameters to a stored procedure, so that the stored procedure can act based on the parameter value(s) that is passed.
+
+See [this](https://softwareengineering.stackexchange.com/a/158565) wonderful SO answer for the pros and cons of having the business logic in stored procedures.
+
+*GOOD*
+- [See this](https://softwareengineering.stackexchange.com/a/263479) wonderful SO answer
+- use the Domain Driven Design, leveraging on ORM
+- use the Repository Pattern
+- wrap the Domain Model into a Service Layer
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
