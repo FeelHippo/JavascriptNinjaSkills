@@ -76,6 +76,16 @@
             <li><a href="#design-vs-architecture">Design Vs Architecture</a></li>
             <li><a href="#multiple-inheritance">Multiple Inheritance</a></li>
             <li><a href="#domain-logic-in-stored-procedures">Domain Logic in Stored Procedures</a></li>
+            <li><a href="#oop-took-over-the-world">OOP Took Over the World</a></li>
+            <li><a href="#bad-design">Bad Design</a></li>
+        </ul>
+        <summary>Languages</summary>
+        <ul>
+            <li><a href="#3-worst-defects">3 Worst Defects</a></li>
+            <li><a href="#functional-programming">Functional Programming</a></li>
+            <li><a href="#closures">Closures</a></li>
+            <li><a href="#generics">Generics</a></li>
+            <li><a href="#high-order-functions">High Order Functions</a></li>
         </ul>
     </li>
   </ul>
@@ -1309,3 +1319,215 @@ See [this](https://softwareengineering.stackexchange.com/a/158565) wonderful SO 
 - wrap the Domain Model into a Service Layer
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- OOP TOOK OVER THE WORLD -->
+
+## OOP Took Over the World
+
+In your opinion, why has Object-Oriented Design dominated the market for so many years?
+
+See [this](https://stackoverflow.blog/2020/09/02/if-everyone-hates-it-why-is-oop-still-so-widely-spread/) wonderful SO article. 
+
+```text
+OOP is still one of the dominant paradigms right now. But that might be due to the success of languages who happen to be OOP. Java, C++ and Kotlin rule mobile for Android and Swift and Objective-C for iOS so you can’t develop software for mobile unless you understand the object-oriented approach. For the web, it’s JavaScript, Python, PHP and Ruby.
+
+Asking why so many widely-used languages are OOP might be mixing up cause and effect. Richard Feldman argues in his talk that it might just be coincidence. C++ was developed in the early 1980s by Bjarne Stroustrup, initially as a set of extensions to the C programming language. Building on C , C++ added object orientation but Feldman argues it became popular for the overall upgrade from C including type-safety and added support for automatic resource management, generic programming, and exception handling, among other features.
+
+Then Java wanted to appeal to C++ programmers and doubled down on the OOP part. Ultimately, Sun Microsystems wanted to repeat the C++ trick by aiming for greatest familiarity for developers adopting Java.
+
+Millions of developers quickly moved to Java due to its exclusive integration in web browsers at the time. Seen this way, OOP seems to just be hitching a ride, rather than driving the success.
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BAD DESIGN -->
+
+## Bad Design
+
+What would you do to understand if your code has a bad design?
+
+See [this](https://medium.com/globant/characteristics-of-a-poor-software-design-de71e7b7a73c) interesting article from Medium
+
+```text
+- Breaking of one functionality during development of another one.
+- Existing code not supporting future enhancements.
+- Complexity in understanding and maintaining the code.
+- Difficult to test feature in isolation
+- Difficult to add new features
+```
+
+According to Robert C. Martin, there are 4 important characteristics of a bad design:
+- Rigidity: when a change in a class requires changes in some other coupled classes.
+- Immobility: when certain components cannot be reused and are not generic enough. 
+- Fragility: when a change somewhere in the codebase breaks something else where. 
+- Viscosity: when it's easier to come up with a hack rather than good code (not rigid, not immobile, and not fragile). 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- 3 WORST DEFECTS -->
+
+## 3 Worst Defects
+
+Dart is an object-oriented, class-based, garbage-collected language with C-style syntax.
+
+It can compile to machine code, JavaScript, or WebAssembly.
+
+It supports interfaces, mixins, abstract classes, reified generics and type inference.
+
+- It's verbose.
+  - See `null safety` [here](https://dart.dev/null-safety), lots to consider and additional syntax to deal with it.
+
+```dart
+// Unless you tell Dart that a variable can have a null value, it is non-nullable.
+String name = null; // not allowed, compiler will complain
+String? lastname = null; // OK, but from this point on you are in charge of double checking
+
+if (lastName != null && lastName.isNotEmpty) {
+  // you can now use your variable
+  String nonNullLastName = lastname;
+}
+
+// assertion operator !
+String nonNullLastName = lastname!; // You force the compiler to think the variable is not null. Common source of bugs
+
+// All the non-nullable variables must be initialized after their declaration.
+// To counter this issue the late keyword is used. It allows lazy initializing a variable.
+// However, it is then the Developer's job to ensure that it is initialized before it is used.
+late String lateLastName; // not assigned yet, the compiler trusts you!
+lateLastName = "Smith";
+print(lateLastName); // all good
+
+// additional operators
+
+// conditional member access
+late SomeObject? object;
+int? someObjectValue = object?.someValue; // will obtain the value only if it's NOT null
+
+// if null
+int actualValue = someObjectValue ?? 0; // if value is null, by default return 0
+```
+  - Instead of [sum types](https://medium.com/axon-insights/mastering-sum-types-b588a3bc165b), it encourages [class hierarchy](https://staff.fnwi.uva.nl/a.j.p.heck/Courses/JAVAcourse/ch3/s1.html). See <a href="#inheritance-vs-composition">Inheritance</a>.
+
+```typescript
+// Typescript provides sum types
+type Value = string | number
+
+const a: Value = 'John'
+const b: Value = 70
+const c: Value = false // Won't compile
+
+function program(a: Value) {
+    if (typeof a === 'string') {
+        // In this conditional block the type of `a` is `string`
+        a.toUpperCase()
+    } else {
+        // In this conditional block the type of `a` is `number`
+        a.toExponential()
+
+        // Won't compile because there's no such property on the `number` type
+        a.toUpperCase()
+    }
+}
+```
+
+  - See how to equate objects (override `==``):
+
+```dart
+class Person {
+  const Person(this.name);
+
+  final String name;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Person &&
+              runtimeType == other.runtimeType &&
+              name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+}
+```
+- It is heavily [influenced by C and Java](https://news.ycombinator.com/item?id=19748982) -- as opposed to modern languages like Swift and Rust. See <a href="#oop-took-over-the-world">OOP vs FP</a>.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- FUNCTIONAL PROGRAMMING -->
+
+## Functional Programming
+
+Why is there a rising interest on Functional Programming?
+
+See [this](https://softwareengineering.stackexchange.com/a/71291) wonderful SO answer.
+
+Q: In which scenarios should I consider a functional programming languages better suited to do a given task?
+
+A: Anything that involves creating sequence of derived data elements using a number of transformation steps. Essentially, the "spreadsheet problem". You have some initial data and set of row-by-row calculations to apply to that data.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CLOSURES -->
+
+## Closures
+
+What is a closure, and what is useful for? What's in common between closures and classes?
+
+See my little [snippet](https://github.com/FeelHippo/JavascriptNinjaSkills/blob/main/js/closure.js). 
+I would say that what they have in common in encapsulation. 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GENERICS -->
+
+## Generics
+
+What are generics useful for?
+
+See this item from Oracle [DOCS](https://docs.oracle.com/javase/tutorial/java/generics/why.html)
+
+In a nutshell, generics enable types (classes and interfaces) to be parameters when defining classes, interfaces and methods. Much like the more familiar formal parameters used in method declarations, type parameters provide a way for you to re-use the same code with different inputs. The difference is that the inputs to formal parameters are values, while the inputs to type parameters are types.
+
+Benefits@
+- Stronger type checks at compile time
+- Elimination of casts
+
+```dart
+List<String> list = <String>['a', 'b'];
+list.add("hello");
+String s = list.last; // no cast
+print(s);
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- HIGH ORDER FUNCTIONS -->
+
+## High Order Functions
+
+What are higher-order functions? What are they useful for? Write one, in your preferred language.
+
+A higher-order function is a function that does one of the following:
+
+- Takes another *function as an argument*.
+- Returns another *function as its result*.
+
+```typescript
+// takes a function as parameter
+function noisy(f) {
+  return (...args) => {
+    console.log("calling with", args);
+    let result = f(...args);
+    console.log("called with", args, ", returned", result);
+    return result; // returns a function
+  };
+}
+noisy(Math.min)(3, 2, 1); // invokation: takes in a function, and executes the returned one
+// → calling with [3, 2, 1]
+// → called with [3, 2, 1] , returned 1
+```
+
+See Dart version [here](https://github.com/FeelHippo/JavascriptNinjaSkills/blob/main/dart/HOF.dart)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+

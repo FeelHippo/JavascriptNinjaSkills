@@ -1,0 +1,21 @@
+{
+  "roots": [
+    "playground"
+  ],
+  "packages": [
+    {
+      "name": "playground",
+      "version": "0.0.0",
+      "dependencies": [
+        "args"
+      ],
+      "devDependencies": []
+    },
+    {
+      "name": "args",
+      "version": "2.5.0",
+      "dependencies": []
+    }
+  ],
+  "configVersion": 1
+}
