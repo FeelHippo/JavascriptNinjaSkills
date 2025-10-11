@@ -86,6 +86,11 @@
             <li><a href="#closures">Closures</a></li>
             <li><a href="#generics">Generics</a></li>
             <li><a href="#high-order-functions">High Order Functions</a></li>
+            <li><a href="#loops-and-recursion">Loops and Recursion</a></li>
+            <li><a href="#functions-as-first-class-citizens">Functions as First Class Citizens</a></li>
+            <li><a href="#anonymous-functions">Anonymous Functions</a></li>
+            <li><a href="#static-and-dynamic-typing">Static and Dynamic Typing</a></li>
+            <li><a href="#namespaces">Namespaces</a></li>
         </ul>
     </li>
   </ul>
@@ -1378,33 +1383,35 @@ It supports interfaces, mixins, abstract classes, reified generics and type infe
   - See `null safety` [here](https://dart.dev/null-safety), lots to consider and additional syntax to deal with it.
 
 ```dart
-// Unless you tell Dart that a variable can have a null value, it is non-nullable.
-String name = null; // not allowed, compiler will complain
-String? lastname = null; // OK, but from this point on you are in charge of double checking
-
-if (lastName != null && lastName.isNotEmpty) {
-  // you can now use your variable
-  String nonNullLastName = lastname;
+void main() {
+    // Unless you tell Dart that a variable can have a null value, it is non-nullable.
+      String name = null; // not allowed, compiler will complain
+      String? lastname = null; // OK, but from this point on you are in charge of double checking
+    
+      if (lastName != null && lastName.isNotEmpty) {
+        // you can now use your variable
+        String nonNullLastName = lastname;
+      }
+    
+    // assertion operator !
+      String nonNullLastName = lastname!; // You force the compiler to think the variable is not null. Common source of bugs
+    
+    // All the non-nullable variables must be initialized after their declaration.
+    // To counter this issue the late keyword is used. It allows lazy initializing a variable.
+    // However, it is then the Developer's job to ensure that it is initialized before it is used.
+      late String lateLastName; // not assigned yet, the compiler trusts you!
+      lateLastName = "Smith";
+      print(lateLastName); // all good
+    
+    // additional operators
+    
+    // conditional member access
+      late SomeObject? object;
+      int? someObjectValue = object?.someValue; // will obtain the value only if it's NOT null
+    
+    // if null
+      int actualValue = someObjectValue ?? 0; // if value is null, by default return 0
 }
-
-// assertion operator !
-String nonNullLastName = lastname!; // You force the compiler to think the variable is not null. Common source of bugs
-
-// All the non-nullable variables must be initialized after their declaration.
-// To counter this issue the late keyword is used. It allows lazy initializing a variable.
-// However, it is then the Developer's job to ensure that it is initialized before it is used.
-late String lateLastName; // not assigned yet, the compiler trusts you!
-lateLastName = "Smith";
-print(lateLastName); // all good
-
-// additional operators
-
-// conditional member access
-late SomeObject? object;
-int? someObjectValue = object?.someValue; // will obtain the value only if it's NOT null
-
-// if null
-int actualValue = someObjectValue ?? 0; // if value is null, by default return 0
 ```
   - Instead of [sum types](https://medium.com/axon-insights/mastering-sum-types-b588a3bc165b), it encourages [class hierarchy](https://staff.fnwi.uva.nl/a.j.p.heck/Courses/JAVAcourse/ch3/s1.html). See <a href="#inheritance-vs-composition">Inheritance</a>.
 
@@ -1493,10 +1500,12 @@ Benefits@
 - Elimination of casts
 
 ```dart
-List<String> list = <String>['a', 'b'];
-list.add("hello");
-String s = list.last; // no cast
-print(s);
+void main() {
+  List<String> list = <String>['a', 'b'];
+  list.add("hello");
+  String s = list.last; // no cast
+  print(s);
+}
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -1528,6 +1537,115 @@ noisy(Math.min)(3, 2, 1); // invokation: takes in a function, and executes the r
 ```
 
 See Dart version [here](https://github.com/FeelHippo/JavascriptNinjaSkills/blob/main/dart/HOF.dart)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LOOPS AND RECURSION -->
+
+## Loops and Recursion
+
+Write a loop, then transform it into a recursive function, using only immutable structures (i.e. avoid using variables). Discuss.
+
+```dart
+// loop
+void main() {
+  int counter = 0;
+  while (counter < 100) {
+    print(counter);
+    counter++;
+  }
+  print('Done');
+}
+// recursive
+void main() {
+  recursiveCounter();
+  print('Done');
+}
+
+void recursiveCounter({ int counter = 0 }) {
+  if (counter == 100) return;
+  print(counter);
+  return recursiveCounter(counter: counter + 1);
+}
+```
+
+In my opinion, unless performance and memory optimization are an issue, loop vs recursion is a matter of personal preference. 
+However, loops tend to be better maintainable, easy to ready and scale better, as instructions are executed sequentially.
+Recursive functions are more memory intensive, as they are queued in a stack, and executed LIFO.
+
+For more sophisticated use, see [this](https://github.com/FeelHippo/JavascriptNinjaSkills/blob/main/dart/dynamicProgramming.dart)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- FUNCTIONS AS FIRST CLASS CITIZENS -->
+
+## Functions as First Class Citizens
+
+What does it mean when a language treats functions as first-class citizens? Why is it important that in a language functions are first-class citizens?
+
+See Mozilla's [DOCS](https://developer.mozilla.org/en-US/docs/Glossary/First-class_Function)
+
+```text
+A programming language is said to have First-class functions when functions in that language are treated like any other variable.
+For example, in such a language, a function can be passed as an argument to other functions, can be returned by another function and can be assigned as a value to a variable.
+```
+
+It is important because it makes HOF possible.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ANONYMOUS FUNCTIONS -->
+
+## Anonymous Functions
+
+Show me an example where an anonymous function can be useful.
+
+```text
+An anonymous function is simply a function that does not have a name. Unlike named functions,
+which are declared with a name for easy reference, anonymous functions are usually created for specific tasks and are often assigned to variables or used as arguments for other functions.
+```
+
+```javascript
+// example: CLOSURE
+function private(personalSecret) {
+    // the return function has access to 'personalSecret' because they are both witin the scope of 'private'
+    return () => console.log(personalSecret);
+}
+
+console.log(private) // ==> () => console.log(personalSecret)
+
+const mySecret = private('I have garlic for breakfast'); // create an instance of 'private' with a value that will 'live' within the function
+console.log(mySecret) // ==> { tellMeYourSecret() { console.log('I have garlic for breakfast') } }
+
+// we can now fire the inner function with the value assigned at line 39
+mySecret()
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- STATIC AND DYNAMIC TYPING -->
+
+## Static and Dynamic Typing
+
+There are a lot of different type systems. Let's talk about static and dynamic type systems, and about strong and weak ones. 
+
+You surely have an opinion and a preference about this topic. 
+
+Would you like to share them, and discuss why and when would you promote one particular type system for developing an enterprise software?
+
+See [this](https://stackoverflow.com/a/1517670/10708345) wonderful SO answer.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- NAMESPACES -->
+
+## Namespaces
+
+What are namespaces useful for? Invent an alternative.
+
+See [this](https://stackoverflow.com/questions/991036/what-is-a-namespace) SO answers for some nice descriptions. 
+
+See TS [DOCS](https://www.typescriptlang.org/docs/handbook/namespaces.html) on the subject.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
