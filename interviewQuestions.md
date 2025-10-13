@@ -91,6 +91,11 @@
             <li><a href="#anonymous-functions">Anonymous Functions</a></li>
             <li><a href="#static-and-dynamic-typing">Static and Dynamic Typing</a></li>
             <li><a href="#namespaces">Namespaces</a></li>
+            <li><a href="#language-interoperability">Language Interoperability</a></li>
+            <li><a href="#hate-of-java">Hate of Java</a></li>
+            <li><a href="#good-and-bad-languages">Good and Bad Languages</a></li>
+            <li><a href="#referential-transparency">Referential Transparency</a></li>
+            <li><a href="#stack-and-heap">Stack and Heap</a></li>
         </ul>
     </li>
   </ul>
@@ -1532,7 +1537,6 @@ function noisy(f) {
   };
 }
 noisy(Math.min)(3, 2, 1); // invokation: takes in a function, and executes the returned one
-// → calling with [3, 2, 1]
 // → called with [3, 2, 1] , returned 1
 ```
 
@@ -1612,10 +1616,10 @@ function private(personalSecret) {
     return () => console.log(personalSecret);
 }
 
-console.log(private) // ==> () => console.log(personalSecret)
+console.log(private) // ==> ƒ private(personalSecret) { return () => console.log(personalSecret); }
 
 const mySecret = private('I have garlic for breakfast'); // create an instance of 'private' with a value that will 'live' within the function
-console.log(mySecret) // ==> { tellMeYourSecret() { console.log('I have garlic for breakfast') } }
+console.log(mySecret) // ==> () => console.log(personalSecret)
 
 // we can now fire the inner function with the value assigned at line 39
 mySecret()
@@ -1646,6 +1650,135 @@ What are namespaces useful for? Invent an alternative.
 See [this](https://stackoverflow.com/questions/991036/what-is-a-namespace) SO answers for some nice descriptions. 
 
 See TS [DOCS](https://www.typescriptlang.org/docs/handbook/namespaces.html) on the subject.
+
+See [this](https://stackoverflow.com/a/13879754/10708345) for Dart's equivalent, `library`.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LANGUAGE INTEROPERABILITY -->
+
+## Language Interoperability
+
+Talk about interoperability between Java and C# (in alternative, choose 2 other arbitrary languages)
+
+See [this](https://stackhub.net/manuals/java-and-c-interoperability-strategies) interesting manual.
+
+- integration of systems written in these two programming languages
+  - One of the most common methods for interoperability is through *web services*
+    - REST
+    - SOAP
+  - Using a message broker allows different systems to communicate asynchronously
+    - AMQP (RabbitMQ)
+    - Kafka
+    - SQS
+  - using common data formats such as JSON or XML can help facilitate communication
+    - JSON
+    - XML
+  - it's possible to directly call Java code from C# and vice versa
+    - Java Native Interface (JNI)
+    - P/Invoke
+  - There are platforms and tools designed for cross-language execution
+    - JVM Hosting in .NET
+  - If both applications can access a common database, sharing data through database operations (CRUD) is an easy way to achieve interoperability.
+    - DBMS
+    - ORM
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- HATE OF JAVA -->
+
+## Hate of Java
+
+Why do many software engineers not like Java?
+
+Many software engineers have mixed feelings about Java for several reasons:
+
+- *Verbosity*: Java requires more boilerplate code compared to more concise languages like Python or JavaScript, which can lead to longer development times and increased maintenance efforts.
+- *Performance*: Java can be slower than languages like C or C++ due to its reliance on the Java Virtual Machine (JVM) and garbage collection. This can be a concern for high-performance applications.
+- *Memory Consumption*: Java applications tend to consume more memory than applications written in languages that compile directly to native code, which can be a drawback for resource-constrained environments.
+- *Learning Curve*: For beginners, the learning curve can be steep due to its strict object-oriented principles and the need to understand concepts like interfaces, inheritance, and polymorphism.
+- *Ecosystem and Frameworks*: While Java has a rich ecosystem, some engineers feel that the frameworks and libraries can be overly complex or outdated. This can lead to frustration when trying to implement modern features or patterns.
+- *Concurrency Model*: Java's concurrency model, while powerful, can be complex and lead to issues like deadlocks if not managed carefully. Some developers prefer languages with simpler concurrency models.
+- *Legacy Code*: Many enterprises have large amounts of legacy Java code that can be difficult to maintain or modernize.
+
+Despite these criticisms, it's worth noting that Java remains one of the most widely used programming languages, especially in enterprise environments, due to its stability, portability, and large community support.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GOOD AND BAD LANGUAGES -->
+
+## Good and Bad Languages
+
+What makes a good language good and a bad language bad?
+
+In my opinion, this is a very subjective matter. Hence, I will refer to the latest SO survey to answer this:
+
+- [Here](https://survey.stackoverflow.co/2024/technology) you will find the results
+- the most loved programming languages (with related characteristics) are:
+  - JS: see [this](https://www.geeksforgeeks.org/javascript/advantages-and-disadvantages-of-javascript/)
+  - Python: see [this](https://serokell.io/blog/python-pros-and-cons)
+  - TS: see [this](https://www.altexsoft.com/blog/typescript-pros-and-cons/)
+  - Java: see <a href="#hate-of-java">this</a>
+  - C#: see [this](https://www.altexsoft.com/blog/c-sharp-pros-and-cons/)
+  - C++: see [this](https://pangea.ai/resources/a-comprehensive-guide-to-c-advantages-and-disadvantages)
+  - PHP: see [this](https://www.naukri.com/code360/library/pros-and-cons-of-php-programming)
+  - Objective-C: see [this](https://tokyotechlab.com/blogs/objective-c-la-gi)
+  - Golang: see [this](https://www.linkedin.com/pulse/exploring-pros-cons-go-golang-programming-language-indra-nand-jha/)
+
+Conversely, some programming languages are frequently cited as the most hated due to their limitations or outdated nature. Zephyr, Prolog, Apex, Fortran, Nim, Delphi, Ada, Objective-C, VBA, and Perl are among the least loved, often due to niche use cases, steep learning curves, limited modern support, or complex syntax.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- REFERENTIAL TRANSPARENCY -->
+
+## Referential Transparency
+
+Write two functions, one referentially transparent and the other one referentially opaque. Discuss.
+
+See [this](https://medium.com/@linz07m/how-referential-transparency-helps-you-write-safer-code-98f8b1a4875f) cool blog on functional programming.
+
+- An expression is *referentially transparent* if it can be *replaced with its resulting value without affecting the program’s behavior*.
+- This property ensures that *evaluating an expression always produces the same result, given the same input*.
+- *Pure functions* always return the same output for a given input without causing side effects. This makes them referentially transparent.
+
+```typescript
+const double = (n: number): number => n * 2;
+
+const x = double(2);
+const y = double(2);
+
+// double(2) always evaluates to 4. Since we can replace double(2) with 4 directly, the function is referentially transparent.
+// We can safely refactor the code as follows:
+
+const x = 4;
+const y = x;
+```
+
+- Why is Referential Transparency Important?
+  - *Simplifies Reasoning*: Code is easier to understand because expressions behave predictably without requiring external context.
+  - *Safe Refactoring*: Code can be modified without worrying about unintended side effects, reducing bugs.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- STACK AND HEAP -->
+
+## Stack and Heap
+
+What is a stack and what is a heap? What's a stack overflow?
+
+See [this](https://www.programmerinterview.com/data-structures/difference-between-stack-and-heap/) wonderful article. 
+
+- They are both stored in the computer’s RAM (Random Access Memory)
+- In a multi-threaded application, each thread will have its own stack. But, all the different threads will share the heap
+- an object can be stored on the stack. If you create an object inside a function without using the “new” operator then this will create and store the object on the stack, and not on the heap
+  -  in this case, the object is destroyed once the function has run to completion
+- Once a function call runs to completion, any data on the stack created specifically for that function call will automatically be deleted.
+  - Any data on the heap will remain there until it’s manually deleted by the programmer.
+- The stack is set to a *fixed size*, and can not grow past that. 
+  - if there is not enough room on the stack to handle the memory being assigned to it, a *stack overflow occurs*.
+  - This often happens when a lot of nested functions are being called, or if there is an infinite recursive call.
+- If the current size of the heap is too small to accommodate new memory, then more memory can be added to the heap by the operating system.
+  - This is one of the big differences between the heap and the stack.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
