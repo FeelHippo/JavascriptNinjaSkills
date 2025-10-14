@@ -96,6 +96,13 @@
             <li><a href="#good-and-bad-languages">Good and Bad Languages</a></li>
             <li><a href="#referential-transparency">Referential Transparency</a></li>
             <li><a href="#stack-and-heap">Stack and Heap</a></li>
+            <li><a href="#pattern-matching">Pattern Matching</a></li>
+            <li><a href="#exceptions">Exceptions</a></li>
+            <li><a href="#variant-and-contravariant-inheritance">Variant and Contravariant Inheritance</a></li>
+            <li><a href="#constructors-and-interfaces">Constructors and Interfaces</a></li>
+            <li><a href="#node">Node</a></li>
+            <li><a href="#java-and-time-traveling">Java and time-traveling</a></li>
+            <li><a href="#eliminate-null">Eliminate Null</a></li>
         </ul>
     </li>
   </ul>
@@ -1779,6 +1786,177 @@ See [this](https://www.programmerinterview.com/data-structures/difference-betwee
   - This often happens when a lot of nested functions are being called, or if there is an infinite recursive call.
 - If the current size of the heap is too small to accommodate new memory, then more memory can be added to the heap by the operating system.
   - This is one of the big differences between the heap and the stack.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- PATTERN MATCHING -->
+
+## Pattern Matching
+
+Some languages, especially the ones that promote a functional approach, allow a technique called pattern matching.
+
+Do you know it? How is pattern matching different from switch clauses?
+
+- See [Oracle's](https://docs.oracle.com/en/java/javase/17/language/pattern-matching.html) docs:
+  - Pattern matching involves testing whether an object has a particular structure, then extracting data from that object if there's a match.
+  - Not to be confused with a simple `switch` or `when`, because the [patterns](https://en.wikipedia.org/wiki/Pattern_matching) generally have the form of either `sequences or tree structures`
+- Pattern Matching is generally not possible in js/ts
+- see [this](https://dev.to/gvergnaud/bringing-pattern-matching-to-typescript-introducing-ts-pattern-v3-0-o1k) article for more info
+  - pattern matching is achieved in TS by use of a library, it's not native to the language itself
+- Kotlin's [when clause](https://kotlinlang.org/docs/control-flow.html#when-expressions-and-statements) is close to pattern matching
+  - see [this](https://www.reddit.com/r/ProgrammingLanguages/comments/16r01kr/comment/k20b70f/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) to learn why it actually is not pattern matching:
+    - when is limited to:
+      - comparing for equality against another value (usually a literal) `==`
+      - checking the class of an object `is`
+      - checking for containment within a container `contains()`
+    - hence, no patterns for `sequences or tree structures`
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- EXCEPTIONS -->
+
+## Exceptions
+
+Why do some languages have no exceptions by design? What are the pros and cons?
+
+- See [this](https://softwareengineering.stackexchange.com/a/258043) wonderful answer
+- Exceptions can make code more difficult to reason
+  - in many cases code that uses exceptions would look just as complex as code that didn't, because of the extra cleanup required
+- Exceptions can be emulated with a sufficiently powerful type system
+  - modern type systems usually make it more elegant and also harder to forget to handle the error condition
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- VARIANT AND CONTRAVARIANT INHERITANCE -->
+
+## Variant and Contravariant Inheritance
+
+If Cat is an Animal, is TakeCare<Cat> a TakeCare<Animal>?
+
+```dart
+void main() {
+  final Type takeCareOfAnimal = takeCare<Animal>(Animal());
+  final Type takeCareOfCat = takeCare<Cat>(Cat());
+  print(takeCareOfAnimal.runtimeType); // _Type
+  print(takeCareOfCat.runtimeType); // _Type
+  print(takeCareOfCat.runtimeType == takeCareOfAnimal.runtimeType); // TRUE
+}
+
+class Animal {
+  const Animal({String species = 'cat'}) : _species = species;
+
+  final String _species;
+
+  String get species => _species;
+}
+
+class Cat extends Animal {
+  const Cat({String species = 'cat', String breed = 'siamese'})
+    : _breed = breed,
+      super(species: species);
+
+  final String _breed;
+
+  String get breed => _breed;
+}
+
+Type takeCare<T>(T pet) {
+  return T;
+}
+
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- CONSTRUCTORS AND INTERFACES -->
+
+## Constructors and Interfaces
+
+In Java, C# and many other languages, why are constructors not part of the interface?
+
+- **Interfaces** in Java are used for *defining a contract that classes can implement*
+- A **Constructor** is to *initialize the non-static members* of a particular class with respect to an object.
+- An **Interface** in Java doesn't have a constructor because *all data members in interfaces are public static final by default*, they are constants (assign the values at the time of declaration)
+
+```typescript
+interface Addition {
+   add: (x: int, y: int) => int; // public static
+}
+class Test implements Addition {
+   add(x: int, y: int) {
+      return x + y;
+   }
+}
+```
+
+- An abstract class can have a constructor because it can be instantiated indirectly through its subclasses
+
+```dart
+abstract class Animal {
+  const Animal({String species = 'cat'}) : _species = species;
+
+  final String _species;
+
+  String get species => _species;
+}
+
+class Cat extends Animal {
+  const Cat({String species = 'cat', String breed = 'siamese'})
+      : _breed = breed,
+        super(species: species); // Animal instantiated indirectly through Cat
+
+  final String _breed;
+
+  String get breed => _breed;
+}
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- NODE -->
+
+## Node
+
+In the last years there has been a lot of hype around Node.js.
+
+What's your opinion on using a language that was initially conceived to run in the browser in the backend?
+
+This is a very open question. See [this](https://www.netguru.com/blog/node-js-backend) for some insights
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- JAVA AND TIME TRAVELING -->
+
+## Java and time-traveling
+
+Pretend you have a time machine and pretend that you have the opportunity to go to a particular point in time during Java's (or C#, Python, Go or whatever) history, 
+and talk with some of the JDK architects. 
+What would you try to convince them of? Removing checked exceptions? Adding unsigned primitives? Adding multiple-inheritance?
+
+- *checked exceptions*:
+  - See [DOCS](https://docs.oracle.com/javase/specs/jls/se7/html/jls-11.html) at `11.2. Compile-Time Checking of Exceptions`
+  - `This compile-time checking for the presence of exception handlers is designed to reduce the number of exceptions which are not properly handled`
+  - seems good to me
+- *unsigned primitives*:
+  - See [this](https://stackoverflow.com/a/8346105/10708345) SO answer
+  - NOT to have unsigned primitives seems good to me
+- *multiple-inheritance*
+  - See <a href="#multiple-inheritance">above</a>
+  - this would be a good improvement
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ELIMINATE NULL -->
+
+## Eliminate Null
+
+Imagine you want to remove the possibility to have null references in your preferred language: how would you achieve this goal? What consequences would this have?
+
+- See [this](https://stackoverflow.com/a/3990754/10708345) wonderful answer
+
+```text
+I think the succinct summary of why null is undesirable is that meaningless states should not be representable.
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
