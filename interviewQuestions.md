@@ -104,6 +104,15 @@
             <li><a href="#java-and-time-traveling">Java and time-traveling</a></li>
             <li><a href="#eliminate-null">Eliminate Null</a></li>
         </ul>
+        <summary>Web</summary>
+        <ul>
+            <li><a href="#3rd-party-cookies">3rd Party Cookies</a></li>
+            <li><a href="#api-versioning">API Versioning</a></li>
+            <li><a href="#spas">SPAs</a></li>
+            <li><a href="#statelessness">Statelessness</a></li>
+            <li><a href="#rest-vs-soap">REST vs SOAP</a></li>
+            <li><a href="#mvc-and-mvvm">MVC and MVVM</a></li>
+        </ul>
     </li>
   </ul>
 </details>
@@ -1192,7 +1201,7 @@ And the moral of the story is that we had better regard —after all those centu
 
 How do tests and TDD influence code design?
 
-Refer tpo [this](https://github.com/testdouble/contributing-tests/wiki/Tests'-Influence-on-Design) article.
+Refer to [this](https://github.com/testdouble/contributing-tests/wiki/Tests'-Influence-on-Design) article.
 
 ```text
 Almost any test has the capability of providing helpful design cues about the subject it directly interacts with. 
@@ -1957,6 +1966,121 @@ Imagine you want to remove the possibility to have null references in your prefe
 ```text
 I think the succinct summary of why null is undesirable is that meaningless states should not be representable.
 ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- 3RD PARTY COOKIES -->
+
+## 3rd Party Cookies
+
+Why are first-party cookies and third-party cookies treated so differently?
+
+- *First-party cookies*: These cookies are set by the domain the user is visiting at the time and help deliver a good user experience (remembering language preferences, for example).
+- *Third-party cookies*: These cookies are set by domains other than the one the user is visiting and are typically used for online advertising purposes.
+- See [the EU commission guidelines](https://commission.europa.eu/cookies-policy_en) on cookies for a nice EU example
+- See [my own CMP](https://github.com/FeelHippo/CaliforniaPrivacyAct)
+  - TODO(Filippo): add documentation
+- [This](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie) is pretty much all you need to know about cookies
+  - try navigating to a commercial page, e.g. www.reuters.com, open the developer tools, and see what cookies you have stored
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- API VERSIONING -->
+
+## API Versioning
+
+How would you manage Web Services API versioning?
+
+APIs only need to be up-versioned when a breaking change is made.
+
+Breaking changes include:
+- a change in the format of the response data for one or more calls
+- a change in the request or response type (i.e. changing an integer to a float)
+- removing any part of the API.
+
+REST doesn’t provide for any specific versioning guidelines, but the more commonly used approaches fall into three categories:
+- URI Versioning
+  - it does violate the principle that a URI should refer to a unique resource
+  - it breaks client integration when a version is updated
+  - examples: `http://api.example.com/v1/users` => `http://api.example.com/v2/users
+- Versioning using Custom Request Header
+  - A custom header (e.g. `Accept-version`) allows you to preserve your URIs between versions
+  - however, it is effectively a duplicate of the content negotiation behavior implemented by the existing Accept header (below).
+  - examples: `{ headers: { Accept-Version: v1, X-API-Version: 1 } }` => `{ headers: { Accept-Version: v2, X-API-Version: 2 } }`
+- Versioning using “Accept” header
+  - Content negotiation allows to preserve a clean set of URLs
+  - however, the API should deal with the complexity of serving different versions of content somewhere (usually the Controllers)
+  - The result tends to be a more complex API as clients have to know which headers to specify before requesting a resource
+  - examples: `{ headers: { Accept: application/vnd.example.v1+json } }` => `{ headers: { Accept: application/vnd.example.v2+json } }`
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SPAS -->
+
+## SPAs
+
+From a backend perspective, are there any disadvantages or drawbacks on the adoption of Single Page Applications?
+
+See [this](https://stackoverflow.com/a/26196405/10708345) wonderful SO answer. 
+
+In my opinion:
+- performance: separation of concerns between server and client is positive
+- static assets: the use of CDN to serve the client is also positive
+- authentication: there is some added complexity, see <a href="#oauth-2">OAuth 2.0</a> and <li><a href="#open-id-connect">OpenID Connect</a></li>
+- [CORS](https://github.com/FeelHippo/CORS_exploration/blob/ae665059149b9e0e350655b379b1a4388bd2715a/server.js#L109: If you host the webapp on a different hostname (e.g. a CDN) you may need to deal with it
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- STATELESSNESS -->
+
+## Statelessness
+
+Why do we usually put so much effort into having stateless services? What's so good in stateless code and why and when is statefulness bad?
+
+See <a href="#stateless">above</a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- REST VS SOAP -->
+
+## REST vs SOAP
+
+REST and SOAP: when would you choose one, and when the other?
+
+See [AWS DOCS](https://aws.amazon.com/compare/the-difference-between-soap-rest/)
+
+```text 
+When to use SOAP vs REST?
+Before choosing between SOAP and REST, consider your scenarios and your API users' requirements. The following criteria are worth considering.
+
+Overall application design
+Modern applications like mobile apps and hybrid applications work better with REST APIs. REST gives you the scalability and flexibility to design applications using modern architecture patterns like microservices and containers. However, if you need to integrate or extend legacy systems that already have SOAP APIs, you may be better off continuing with SOAP.
+
+Security
+Public APIs have lower security requirements and demand greater flexibility so anyone can interact with them. So, REST is a better choice when you build public APIs. Conversely, some private APIs for internal enterprise requirements (like data reporting for compliance) may benefit from the tighter security measures in WS-Security of SOAP.
+
+ACID compliance
+Do your API users require stringent consistency and data integrity across a chain of transactions? For instance, finance transactions require an entire batch of data updates to fail if even one update fails.
+
+SOAP has built-in compliance for atomicity, consistency, isolation, and durability (ACID). And SOAP may be better suited for high data integrity requirements. In this case, REST APIs may require additional software modules to enforce the state at the server or database level.
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MVC AND MVVM -->
+
+## MVC and MVVM
+
+In web development, Model-View Controller and Model-View-View-Model approaches are very common, both in the backend and in the frontend. What are they, and why are they advisable?
+
+See [Mozilla's reference on MVC](https://developer.mozilla.org/en-US/docs/Glossary/MVC)
+
+![See it here](https://developer.mozilla.org/en-US/docs/Glossary/MVC/model-view-controller-light-blue.png)
+
+See [Microsoft's reference on MVVM](https://learn.microsoft.com/en-us/dotnet/architecture/maui/mvvm)
+
+![See it here](https://learn.microsoft.com/en-us/dotnet/architecture/maui/media/mvvm-pattern.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
