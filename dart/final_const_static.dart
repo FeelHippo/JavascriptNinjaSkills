@@ -17,7 +17,7 @@ void main() {
 
   // "const" has a meaning that's a bit more complex and subtle in Dart.
   // const modifies *values*. You can use it when creating collections, like const [1, 2, 3],
-  // and when constructing objects (instead of new) like const Point(2, 3).
+  // and when constructing objects (instead of new) like const point = Point(2, 3).
   // Here, const means that the object's entire deep state can be determined entirely at compile time
   // and that the object will be frozen and completely immutable.
   const List<int> list = [1, 2, 3];

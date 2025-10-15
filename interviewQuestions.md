@@ -46,6 +46,9 @@
       </ul>
     </li>
     <li>
+        <a href="https://medium.com/@anandgaur2207/android-interview-questions-for-mid-level-developers-3-6-years-d915266ef936">Android Interview Questions for Mid-Level Developers</a>
+    </li>
+    <li>
         <a href="https://github.com/arialdomartini/Back-End-Developer-Interview-Questions">Back-End Developer Interview Questions</a>
         <summary>My Own Miserable Failures</summary>
         <ul>
@@ -748,6 +751,8 @@ In your opinion and experience, which are the limits and pitfalls of the this pa
     2. *Repository*: This is dedicated to data persistence and retrieval tasks. It abstracts away the details of database operations.
     3. *Events*: used to decouple side-effects (actions performed as consequence of a repository operation) from main operations (the actual repository operation)
     4. *Helpers*: handle side effects, for instance a Notifier
+
+![GOOD: Repository Pattern](https://miro.medium.com/v2/resize:fit:720/format:webp/0*B5a9lPhBRsnQ8Tzp.png)
 
 *GOOD*
 ```javascript
@@ -2072,7 +2077,7 @@ SOAP has built-in compliance for atomicity, consistency, isolation, and durabili
 
 ## MVC and MVVM
 
-In web development, Model-View Controller and Model-View-View-Model approaches are very common, both in the backend and in the frontend. What are they, and why are they advisable?
+In web development, Model-View Controller and Model-View-ViewModel approaches are very common, both in the backend and in the frontend. What are they, and why are they advisable?
 
 See [Mozilla's reference on MVC](https://developer.mozilla.org/en-US/docs/Glossary/MVC)
 
