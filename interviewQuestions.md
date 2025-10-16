@@ -47,11 +47,20 @@
     </li>
     <li>
         <a href="https://medium.com/@anandgaur2207/android-interview-questions-for-mid-level-developers-3-6-years-d915266ef936">Android Interview Questions for Mid-Level Developers</a>
+        <ul>
+            <li><a href="#difference-between-mvvm-and-mvp">Difference between MVVM and MVP</a></li>
+            <li><a href="#role-of-the-repository">Role of the Repository</a></li>
+            <li><a href="#shared-preferences">Shared Preferences</a></li>
+            <li><a href="#kotlin">Kotlin</a></li>
+            <li><a href="#fragments-and-activity">Fragments and Activities</a></li>
+        </ul>
     </li>
     <li>
         <a href="https://github.com/arialdomartini/Back-End-Developer-Interview-Questions">Back-End Developer Interview Questions</a>
         <summary>My Own Miserable Failures</summary>
         <ul>
+            <li><a href="https://medium.com/@cancerian0684/what-are-four-basic-principles-of-object-oriented-programming-645af8b43727">What are the four basic principles of Object Oriented Programming?</a></li>
+            <li><a href="https://www.goanywhere.com/blog/http-vs-tcp-whats-the-difference">The Main Differences Between HTTP and TCP</a></li>
             <li><a href="#sqs-consumer-failure">SQS Consumer Failure</a></li>
             <li><a href="#multi-tenant-architecture">Multi Tenant Architecture</a></li>
         </ul>
@@ -431,8 +440,205 @@ References: [OAuth2 basics](https://supertokens.com/docs/authentication/unified-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-[What are four basic principles of Object Oriented Programming?](https://medium.com/@cancerian0684/what-are-four-basic-principles-of-object-oriented-programming-645af8b43727)
-[The Main Differences Between HTTP and TCP](https://www.goanywhere.com/blog/http-vs-tcp-whats-the-difference)
+<!-- DIFFERENCE BETWEEN MVVM AND MVP -->
+
+## Difference between MVVM and MVP
+
+- <a href="#mvc-and-mvvm">MVVM</a> uses Data Binding or LiveData to directly update the View, reducing boilerplate code.
+  - [Data Binding Library](https://developer.android.com/topic/libraries/data-binding)
+    - The View layer can bind data like so: `<TextView android:text="@{viewmodel.userName}" />`
+    - This removes the need to call any Java code from the ViewModel layer
+  - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata)
+    - a data holder class that can be observed within a given lifecycle
+    - an Observer can be added in a pair with a LifecycleOwner
+    - the observer will be notified about modifications of the wrapped data
+- MVP (Model-View-Presenter) has a Presenter that manually updates the View using interface callbacks.
+  - Model: Handles data and business logic (e.g., API or database interactions).
+  - View: Represents the UI (Activity/Fragment) and handles user interactions.
+  - Presenter: Acts as a bridge between the Model and the View. It processes user input from the View and fetches data from the Model.
+  - see [this](https://medium.com/@manishkumar_75473/understanding-model-view-presenter-mvp-architecture-in-android-a-complete-guide-with-example-fa8e7cecb0e7) in depth explanation
+- In **MVVM**, the *ViewModel doesn’t directly reference the View*, ensuring better testability.
+- In *MVP*, the *Presenter directly interacts with the View*.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ROLE OF THE REPOSITORY -->
+
+## Role of the Repository
+
+The Repository **abstracts data sources** (e.g., local database, API). It:
+
+- Provides a *single source of truth*.
+- Encapsulates *data operations*.
+- Makes it easier to *manage multiple data sources*
+
+See <a href="https://learn.microsoft.com/en-us/dotnet/architecture/maui/mvvm#model">Microsoft's docs on MVVM:</a>
+```text
+Model classes are typically used in conjunction with services or repositories that encapsulate data access and caching
+```
+
+Putting that into perspective: 
+```text
+| View | -- data binding and commands --> | ViewModel | -- ViewModel updates --> | Model              |
+|      | <-- notification --------------- |           | <-- notification ------- | ~~ Repositories ~~ |
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SHARED PREFERENCES -->
+
+## Shared Preferences
+
+What are the pros and cons of using SharedPreferences for storing data?
+
+**Pros**:
+- Easy to use.
+- Suitable for small data (e.g., user preferences).
+
+- **Cons**:
+- Not secure for sensitive data.
+- Limited to key-value pairs.
+  
+How can encrypted shared preferences be used to secure data?
+Use *EncryptedSharedPreferences* from AndroidX to encrypt data using:
+- Master keys stored in the **Android Keystore**.
+- **[AES encryption](https://cybernews.com/resources/what-is-aes-encryption/)** for secure storage.
+
+What is Android Keystore, and how is it used to manage sensitive data?
+The *Android Keystore System is a secure storage solution that allows apps to store cryptographic keys securely*.
+
+These keys are protected by hardware-backed security in modern devices.
+
+Uses in managing sensitive data:
+
+- Store API keys, tokens, and other sensitive information securely.
+- Generate and store encryption keys for encrypting files or shared preferences.
+- Protect keys with biometric authentication (e.g., fingerprint, face ID) or device credentials.
+- Using the Keystore ensures that sensitive data is protected even if the app is compromised.
+
+What are the advantages of using DataStore over SharedPreferences?
+*DataStore is a newer storage solution for key-value pairs*.
+
+Advantages:
+
+- Uses Kotlin coroutines for asynchronous and non-blocking operations.
+- Supports typed data using Proto DataStore.
+- More efficient and less prone to data corruption compared to SharedPreferences.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- KOTLIN -->
+
+## Kotlin
+
+What are the main features of Kotlin, and how is it different from Java?
+Kotlin Features:
+
+- What is the [difference between **lazy** and **lateinit**](https://medium.com/@guruprasadhegde4/lateinit-and-lazy-property-in-kotlin-8776c67878a0), and how do they affect memory storage? 
+    - lazy: *Initializes the property only when accessed for the first time*. Used with *val*.
+    - lateinit: The property is initialized later, but *you must initialize it before accessing it*. Used for *var*.
+
+```kotlin
+// lazy
+val answer: Int by lazy {
+    println("Computing the answer to the Ultimate Question of Life, the Universe, and Everything")
+    42
+}
+
+// lateinit
+class MyClass {
+    lateinit var myVariable: String // will be instantiated later
+
+    fun initializeVariable() {
+        myVariable = "Hello, World!" // this will instantiate it
+    }
+
+    fun printVariable() {
+        if (::myVariable.isInitialized) { // make sure it's been instantiated
+            println(myVariable)
+        } else {
+            println("Variable not initialized")
+        }
+    }
+}
+```
+
+- [Null safety](https://kotlinlang.org/docs/null-safety.html):
+  - Null safety is a Kotlin feature designed to significantly reduce the risk of null references, also known as [The Billion-Dollar Mistake](https://en.wikipedia.org/wiki/Null_pointer#History).
+
+```kotlin
+// Assigns a non-null string to a variable
+var a: String = "abc"
+// Attempts to re-assign null to the non-nullable variable
+a = null
+print(a)
+// Null can not be a value of a non-null type String
+```
+.
+- Extension functions.
+    - Extension functions *add new functions to existing classes without modifying them*:
+    - They enhance readability and reusability.
+
+```kotlin
+fun String.isPalindrome(): Boolean {
+    return this == this.reversed()
+}
+```
+
+- [Coroutines](https://kotlinlang.org/docs/coroutines-basics.html) for asynchronous programming.
+    - To support *efficient concurrency*, Kotlin uses asynchronous programming built around coroutines, which let you write asynchronous code in a natural, sequential style using [suspending functions](https://kotlinlang.org/docs/coroutines-basics.html#suspending-functions)
+    - Coroutines are lightweight *alternatives to threads*
+
+```kotlin
+suspend fun main() {
+    // Root of the coroutine subtree
+    coroutineScope { // this: CoroutineScope. This block is the root coroutine of the coroutine subtree
+        this.launch {
+            this.launch {
+                delay(2.seconds)
+                println("Child of the enclosing coroutine completed")
+            }
+            println("Child coroutine 1 completed")
+        }
+        this.launch {
+            delay(1.seconds)
+            println("Child coroutine 2 completed")
+        }
+    }
+    // Runs only after all children in the coroutineScope have completed
+    println("Coroutine scope completed")
+}
+```
+
+- [Smart casts](https://medium.com/@arshamjafari85/title-kotlins-smart-casts-unveiling-the-magic-of-type-inference-6a323fbde3a8) and type inference:
+  - Smart casts allow the Kotlin compiler to intelligently cast an object to a specific type when certain conditions are satisfied
+
+```kotlin
+fun printStringLength(text: Any) {
+    if (text is String) {
+        println("Length of string: ${text.length}") // Smart cast to String
+    } else {
+        println("Not a string")
+    
+```
+
+Differences from Java:
+
+- Kotlin has a more *concise syntax*.
+- Offers *better null safety*:
+  - Kotlin eliminates null pointer exceptions with:
+        - **Nullable Types (?)**: Variables must be explicitly marked nullable (e.g., String?).
+        - **Safe Calls (?.)**: Access nullable properties safely without exceptions.
+        - **Elvis Operator (?:)**: Provides a default value if a nullable variable is null.
+- *Interoperable with Java*.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- FRAGMENTS AND ACTIVITIES -->
+
+## Fragments and Activities
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- SQS CONSUMER FAILURE -->
 
