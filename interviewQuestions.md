@@ -96,6 +96,7 @@
             <li><a href="#3-worst-defects">3 Worst Defects</a></li>
             <li><a href="#functional-programming">Functional Programming</a></li>
             <li><a href="#closures">Closures</a></li>
+            <li><a href="#currying">Currying</a></li>
             <li><a href="#generics">Generics</a></li>
             <li><a href="#high-order-functions">High Order Functions</a></li>
             <li><a href="#loops-and-recursion">Loops and Recursion</a></li>
@@ -124,6 +125,18 @@
             <li><a href="#statelessness">Statelessness</a></li>
             <li><a href="#rest-vs-soap">REST vs SOAP</a></li>
             <li><a href="#mvc-and-mvvm">MVC and MVVM</a></li>
+        </ul>
+        <summary>Databases</summary>
+        <ul>
+            <li><a href="#migrations">Migrations</a></li>
+            <li><a href="#null-is-special">NULL is special</a></li>
+            <li><a href="#acid">ACID</a></li>
+            <li><a href="#schema-migrations">Schema Migrations</a></li>
+            <li><a href="#lazy-loading">Lazy Loading</a></li>
+            <li><a href="#n+1-problem">N+1 Problem</a></li>
+            <li><a href="#slowest-queries">Slowest Queries</a></li>
+            <li><a href="#normalization">Normalization</a></li>
+            <li><a href="#blue-green-deployment">Blue/Green Deployment</a></li>
         </ul>
     </li>
   </ul>
@@ -698,7 +711,7 @@ A:
   - *Concurrency issues* - A global mutable state requires locking when used in a concurrent situation. This adds complexity to the code.
 - `Good alternatives:`
   - *Function parameters* - See `Function impurity` above.
-  - *Dependency Injection* - See [this](https://stackoverflow.com/a/3140/10708345) wonderful SO answer.
+  - *Dependency Injection* - See [this](https://stackoverflow.com/a/3140/10708345) wonderful SO answer, and [this](https://forum.codewithmosh.com/t/what-is-the-difference-between-singleton-and-dependency-injection/11652) discussion on design patterns.
   - *Immutable global state* - This is effectively just "a Constant".
   - *Immutable singletons* - Same as above, but their instantiation can wait till they are needed. 
 
@@ -1169,9 +1182,9 @@ What is an Anti-corruption Layer?
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ANTI CORRUPTION LAYER -->
+<!-- SINGLETON -->
 
-## Anti Corruption Layer
+## Singleton
 
 Singleton is a design pattern that restricts the instantiation of a class to one single object. Writing a Thread-Safe Singleton class is not so obvious. Would you try?
 
@@ -1717,6 +1730,43 @@ I would say that what they have in common in encapsulation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- CURRYING -->
+
+## Currying
+
+See [this](https://gist.github.com/donnut/fd56232da58d25ceecf1) explanation and [this](https://stackoverflow.com/a/36321/10708345) SO answer.
+
+In functional programming you often want to apply a function partly. 
+
+Currying is when you break down a function that takes multiple arguments into a series of functions that each take only one argument.
+
+*BEFORE*
+```javascript
+function add (a, b) {
+    return a + b;
+}
+
+add(3, 4); // returns 7
+```
+
+*AFTER*
+```javascript
+function add (a) {
+    return function (b) {
+        return a + b;
+    }
+}
+
+// usage
+add(3)(4); // returns 7
+
+var add3to = add(3); // returns a function
+
+add3to(4); // returns 7
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- GENERICS -->
 
 ## Generics
@@ -2110,6 +2160,7 @@ class Test implements Addition {
 ```
 
 - An abstract class can have a constructor because it can be instantiated indirectly through its subclasses
+  - See [Constructors in Dart – Use Cases and Examples](https://www.freecodecamp.org/news/constructors-in-dart/). 
 
 ```dart
 abstract class Animal {
@@ -2292,6 +2343,230 @@ See [Mozilla's reference on MVC](https://developer.mozilla.org/en-US/docs/Glossa
 See [Microsoft's reference on MVVM](https://learn.microsoft.com/en-us/dotnet/architecture/maui/mvvm)
 
 ![See it here](https://learn.microsoft.com/en-us/dotnet/architecture/maui/media/mvvm-pattern.png)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MIGRATIONS -->
+
+## Migrations
+
+How would you migrate an application from a database to another, for example from MySQL to PostgreSQL?
+If you had to manage that project, which issues would you expect to face?
+
+- *data type compatibility*:
+  - Assess and address differences in data types between the two DBMS
+  - Define and implement data type transformations where necessary
+- *migration configuration*
+  - create a config file
+    - allows for granular control over the migration process
+    - data mapping
+    - transformations
+    - schema modifications
+- *application compatibility*
+  - analyze the impact of the migration on existing applications involved
+  - test all applications once the migration is completed to ensure consistency
+- *backup and recovery*
+  - create a disaster recovery plan
+  - create full backups
+  - test backup and restoration procedures
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- NULL IS SPECIAL -->
+
+## NULL is special
+
+Why do databases treat null as a so special case?
+For example, why does SELECT * FROM table WHERE field = null not match records with null field in SQL?
+
+[NULL](https://en.wikipedia.org/wiki/Null_(SQL)) represents *missing information and inapplicable information*.
+In SQL, null is a *marker, not a value*. This explains why SELECT cannot filter by NULL, as it expects a **value**. 
+This usage is quite different from most programming languages, where a null value of a reference means it is not pointing to any object.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- ACID -->
+
+## ACID
+
+<a href="#what-is-acid">See Above: "What is ACID"</a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SCHEMA MIGRATIONS -->
+
+## Schema Migrations
+
+How would you manage database [schema migrations](https://www.liquibase.com/resources/guides/database-schema-migration)? 
+That is, how would you automate changes to database schema, as the application evolves, version after version?
+
+Database schema migration is the process of managing and applying changes to a database’s structural framework or schema. 
+Sometimes referred to as simply “database migrations,” they allow the schema to evolve alongside the application.
+
+This often involves tasks such as adding or removing tables, columns, or indexes, as well as modifying data types or constraints. 
+Executed correctly, these migrations ensure data integrity, consistency, and optimal database performance throughout the software development life cycle.
+
+Schema migrations align more closely with DevOps practices and make for faster, more productive teams.
+
+To answer the question, schema migration is preferred over **state-based deployments**.
+
+State-based deployment methods **compare the current state of a database to its ideal state to find necessary changes**. 
+With a schema migration-based deployment approach, **changes are instead described by the user alongside development and applied iteratively**. 
+
+This allows for benefits including:
+
+- Small, incremental changes
+- Consistent processes for all code delivery
+- Fast feedback loops
+- Granular feature control
+- Better [DB testing](https://en.wikipedia.org/wiki/Database_testing)
+- Mitigation of [database drift](https://www.bytebase.com/blog/what-is-database-schema-drift/)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- LAZY LOADING -->
+
+## Lazy Loading
+
+How is lazy loading achieved? When is it useful? What are its pitfalls?
+
+See [this](https://stackoverflow.com/a/36297/10708345) wonderful SO answer:
+
+```text
+It's called lazy loading because, like a lazy person, you are putting off doing something you don't want to.
+The opposite is Eager Loading, where you load something right away, long before you need it.
+
+If you are curious why people might use lazy loading, consider an application that takes a LOOOOONG time to start.
+This application is probably doing a lot of eager loading... loading things from disk, and doing calculations and whatnot long before it is ever needed.
+
+Compare this to lazy loading, the application would start much faster, but then the first time you need to do something that requires some long running load, 
+there may be a slight pause while it is loaded for the first time. 
+
+Thus, with lazy loading, you are amortizing the load time throughout the course of running your application...
+and you may actually save from loading things that the user may never intend to use.
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- N+1 PROBLEM -->
+
+## N+1 Problem
+
+The so called "N + 1 problem" is an issue that occurs when code needs to load the children of a parent-child relationship with a ORMs that have lazy-loading enabled,
+and that therefore issue a query for the parent record, and then one query for each child record. How to fix it?
+
+[Let's say](https://stackoverflow.com/a/97253/10708345) you have a collection of Car objects (database rows), and each Car has a collection of Wheel objects (also rows).
+In other words, Car → Wheel is a 1-to-many relationship.
+
+Now, let's say you need to iterate through all the cars, and for each one, print out a list of the wheels. The naive O/R implementation would do the following:
+
+```sql
+SELECT * FROM Cars;
+```
+
+And then for each Car:
+
+```sql
+SELECT * FROM Wheel WHERE CarId = ?
+```
+
+In other words, you have one select for the Cars, and then N additional selects, where N is the total number of cars.
+
+Alternatively, one could get all wheels and perform the lookups in memory:
+
+```sql
+SELECT * FROM Wheel;
+```
+
+This reduces the number of round-trips to the database from N+1 to 2.
+Most ORM tools give you several ways to prevent N+1 selects.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- SLOWEST QUERIES -->
+
+## Slowest Queries
+
+How would you find the most expensive queries in an application?
+
+SQL servers provide **Dynamic Management Views (DMVs)**.
+
+The *sys.dm_exec_requests* and *sys.dm_os_waiting_tasks* views provide valuable information about what each query is waiting for and how long it has been in that state.
+
+```sql
+SELECT 
+    r.session_id, 
+    r.status, 
+    r.wait_type, 
+    r.wait_time, 
+    r.blocking_session_id,
+    st.text AS QueryText
+FROM 
+    sys.dm_exec_requests AS r
+CROSS APPLY 
+    sys.dm_exec_sql_text(r.sql_handle) AS st
+WHERE 
+    r.wait_type IS NOT NULL
+ORDER BY 
+    r.wait_time DESC;
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- NORMALIZATION -->
+
+## Normalization
+
+In your opinion, is it always needed to use database normalization? When is it advisable to use denormalized databases?
+
+[See](https://drive.google.com/file/d/1DSnAKE87qgB73S30PIILxbvZwSjLTTf3/view?usp=drive_link)
+- see the first 3.5 Normalized Forms in the slides
+
+Normalization *avoids storing redundant data*, as this can lead to "anomalies" when inserting/updating/deleting data.
+
+- use cases:
+    - *OLTP* online transactional processing -> uses *normalised* data
+    - *OLAP* online analytical processing -> uses *denormalized* data for *data warehouses* etc (star schema, OLAP cubes)
+
+Hence, denormalized data can be used for *analytical purposes*.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- BLUE GREEN DEPLOYMENT -->
+
+## Blue/Green Deployment
+
+One of the Continuous Integration's techniques is called Blue-Green Deployment:
+it consists in having two production environments, as identical as possible, and in performing the deployment in one of them while the other one is still operating, 
+and then in safely switching the traffic to the second one after some convenient testing. 
+This technique becomes more complicated when the deployment includes changes to the database structure or content. 
+I'd like to discuss this topic with you.
+
+[See](https://docs.aws.amazon.com/whitepapers/latest/blue-green-deployments/best-practices-for-managing-data-synchronization-and-schema-changes.html).
+
+```text
+Both the blue and green environments need up-to-date data:
+
+- The green environment needs up-to-date data access because it’s becoming the new production environment.
+
+- The blue environment needs up-to-date data in the event of a rollback, when production is either shifts back or remains on the blue environment.
+
+Broadly, you accomplish this by having both the green and blue environments share the same data stores.
+
+Structured data stores, such as relational database management systems (RDBMS),
+where the data schema can diverge between the environments, typically require additional considerations:
+
+A general recommendation is to decouple schema changes from the code changes:
+
+- The schema is changed first, before the blue/green code deployment.
+  - Database updates must be backward compatible, so the old version of the application can still interact with the data.
+  - "additive approach": you can add fields to tables, new entities, and relationships
+
+- The schema is changed last, after the blue/green code deployment.
+  - Code changes in the new version of the application must be backward compatible with the old schema.
+  - "deletive approach": you can remove unneeded fields, entities, and relationships, or merge and consolidate them. 
+  - After this removal, the earlier application version is no longer operational.
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
