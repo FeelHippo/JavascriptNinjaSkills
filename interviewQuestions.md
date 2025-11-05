@@ -1446,9 +1446,9 @@ in their test and the implications of that coupling on the design and malleabili
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- DESIGN VS ARCHITECTURE -->
+<!-- MULTIPLE INHERITANCE -->
 
-## Design Vs Architecture
+## Multiple Inheritance
 
 Neither Typescript nor Dart support multiple "implementation" inheritance. They do, however, support multiple interfaces.
 
@@ -1579,13 +1579,28 @@ In your opinion, why has Object-Oriented Design dominated the market for so many
 See [this](https://stackoverflow.blog/2020/09/02/if-everyone-hates-it-why-is-oop-still-so-widely-spread/) wonderful SO article. 
 
 ```text
-OOP is still one of the dominant paradigms right now. But that might be due to the success of languages who happen to be OOP. Java, C++ and Kotlin rule mobile for Android and Swift and Objective-C for iOS so you can’t develop software for mobile unless you understand the object-oriented approach. For the web, it’s JavaScript, Python, PHP and Ruby.
+OOP is still one of the dominant paradigms right now. But that might be due to the success of languages who happen to be OOP. 
 
-Asking why so many widely-used languages are OOP might be mixing up cause and effect. Richard Feldman argues in his talk that it might just be coincidence. C++ was developed in the early 1980s by Bjarne Stroustrup, initially as a set of extensions to the C programming language. Building on C , C++ added object orientation but Feldman argues it became popular for the overall upgrade from C including type-safety and added support for automatic resource management, generic programming, and exception handling, among other features.
+Java, C++ and Kotlin rule mobile for Android and Swift and Objective-C for iOS so you can’t develop software for mobile unless you understand the object-oriented approach. 
 
-Then Java wanted to appeal to C++ programmers and doubled down on the OOP part. Ultimately, Sun Microsystems wanted to repeat the C++ trick by aiming for greatest familiarity for developers adopting Java.
+For the web, it’s JavaScript, Python, PHP and Ruby.
 
-Millions of developers quickly moved to Java due to its exclusive integration in web browsers at the time. Seen this way, OOP seems to just be hitching a ride, rather than driving the success.
+Asking why so many widely-used languages are OOP might be mixing up cause and effect. 
+
+Richard Feldman argues in his talk that it might just be coincidence. 
+
+C++ was developed in the early 1980s by Bjarne Stroustrup, initially as a set of extensions to the C programming language. 
+
+Building on C , C++ added object orientation but Feldman argues it became popular for the overall upgrade from C including type-safety and added support for automatic resource management, 
+generic programming, and exception handling, among other features.
+
+Then Java wanted to appeal to C++ programmers and doubled down on the OOP part. 
+
+Ultimately, Sun Microsystems wanted to repeat the C++ trick by aiming for greatest familiarity for developers adopting Java.
+
+Millions of developers quickly moved to Java due to its exclusive integration in web browsers at the time. 
+
+Seen this way, OOP seems to just be hitching a ride, rather than driving the success.
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

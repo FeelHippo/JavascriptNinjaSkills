@@ -12,8 +12,8 @@ import 'dart:io';
 // Encapsulation is the mechanism of hiding of data implementation by restricting access to public methods.
 // Instance variables are kept private and accessor methods are made public to achieve this.
 
-// Inheritances expresses “is-a” and/or “has-a” relationship between two objects.
-// Using Inheritance, In derived classes we can reuse the code of existing super classes.
+// Inheritance expresses “is-a” and/or “has-a” relationship between two objects.
+// Using Inheritance, in derived classes, we can reuse the code of existing super classes.
 // the concept of “is-a” is based on class inheritance (using extends) or interface implementation (using implements).
 
 // Polymorphism means one name many forms. It is further of two types — static and dynamic.
