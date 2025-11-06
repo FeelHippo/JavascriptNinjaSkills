@@ -53,7 +53,7 @@ class Person extends PersonInterface {
 
 // ABSTRACTION
 // Abstract means a concept or an Idea which is not associated with any particular instance.
-//Using abstract class/Interface we express the intent of the class rather than the actual implementation.
+// Using abstract class/Interface we express the intent of the class rather than the actual implementation.
 abstract class PersonInterface {
   String formatPersonalData();
   String promptUserData();

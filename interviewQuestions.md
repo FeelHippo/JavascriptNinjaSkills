@@ -1805,6 +1805,15 @@ void main() {
 }
 ```
 
+```typescript
+function identity<Type>(...args: Type[]): Type {
+    return args[0];
+}
+
+console.log(identity('One', 'Two', 'Three'));
+console.log(identity(1, 2, 3));
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- HIGH ORDER FUNCTIONS -->
