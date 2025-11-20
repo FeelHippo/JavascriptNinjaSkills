@@ -1940,6 +1940,32 @@ Would you like to share them, and discuss why and when would you promote one par
 
 See [this](https://stackoverflow.com/a/1517670/10708345) wonderful SO answer.
 
+*STATIC*
+```text
+A language is statically typed if the type of a variable is known at compile time. 
+
+For some languages this means that you as the programmer must specify what type each variable is:
+
+final List<SomeMap> myMap = <SomeMap>[];
+
+Other languages  offer some form of type inference, the capability of the type system to deduce the type of a variable :
+
+final name = 'Filippo'; // name.runtimeType is String
+
+The main advantage here is that all kinds of checking can be done by the compiler, and therefore a lot of trivial bugs are caught at a very early stage.
+
+(e.g.: OCaml, Haskell, Scala, Kotlin, Java, C, C++, Dart)
+```
+
+*DYNAMIC*
+```text
+A language is dynamically typed if the type is associated with run-time values, and not named variables/fields/etc. 
+
+This means that you as a programmer can write a little quicker because you do not have to specify types every time
+
+(e.g.: Perl, Ruby, Python, PHP, JavaScript, Erlang)
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- NAMESPACES -->

@@ -12,8 +12,8 @@ codeHoist();
 
 // classic hoisting example
 a = console.info;
-console.log(a('hoisted')); // 'hoisted'
-var a;
+a('hoisted'); // 'hoisted'
+var a; // declaration of var, after execution
 
 console.log('~~~ 1', b); // 10
 console.log('~~~ 2', d); // undefined, because 'd' is assigned a value at a later stage
